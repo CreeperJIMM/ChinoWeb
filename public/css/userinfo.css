@@ -1,0 +1,43 @@
+.servers {
+display: inline-block;
+position: fixed;
+min-height: 100vh;
+width: 64px;
+background-color: #313443c9;
+top: 200px;
+left: 0px;
+bottom: 0px;
+overflow-x: visible;
+}
+.servers ul {
+    right: -10px;
+    left: 200px;
+    text-align: left;
+    color: white;
+}
+#myself a {
+    background-color: unset;
+}
+#guilds a {
+    background-color: unset;
+}
+#myself img {
+    border-radius: 25px;
+}
+#guilds img {
+    border-radius: 25px;
+}
+#guildmenu  {
+    background-color: rgba(153, 50, 204, 0.699);
+    display: inline-block;
+    position: fixed;
+    height: 32px;
+    width: 64px;
+    top: 150px;
+    left: 0px;
+    bottom: 100px;
+    color: white;
+}
+.datas{
+    border-style:solid;background-color: rgba(43, 105, 153, 0.781); width: 86%; text-align: center;position: static;top: 50%;left: 50%;margin: 15px 0 0 10%;
+}

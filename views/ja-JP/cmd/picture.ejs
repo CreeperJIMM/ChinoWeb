@@ -1,0 +1,57 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+      <title>
+         發生錯誤!
+      </title>   
+   </head>
+   <script src="/js/getinfo.js"></script><script>
+          (async() => {
+   var word = await getData()
+   let urls = new URL(document.URL)
+   var img = await getpicture(urls.searchParams.get("img"),urls.searchParams.get("nsfw"));
+   if(img.toString() === "No_enough_money") {
+        document.getElementById('order').innerHTML="❌抱歉 你的金錢不夠了"
+        return;
+   }
+   if(img.ok == false) {
+      document.getElementById('order').innerHTML="❌抱歉 發生了一點錯誤<br>請再試一次"
+        return;
+   }
+   let size = ' width="40%" height="40%"'
+   var word = await getData()
+   let user_data = await getUser(word.id);
+   let ismoblie= await isMobileDevices();
+   if(ismoblie) {
+    size = ' width="95%" height="95%"'
+   }else{
+    size = ' width="38%" height="38%"'
+   }
+   let url = new URL(document.documentURI);
+   setTimeout((async) => {
+    document.getElementById('daily').innerHTML = '<img src="/api/picture?img='+url.searchParams.get("img")+'&nsfw='+url.searchParams.get("nsfw").toString()+'&file='+img.file+'" '+size+'>'
+   }, 400);
+   let imgname = url.searchParams.get("img"),imgname2 = null,nsfws = "",money = null;
+   if(url.searchParams.get("nsfw") === "true") {
+       money = "35";nsfws="成熟"
+   }else{
+       money = "25"}
+   if(imgname === "chino") {imgname2 = "智乃"}else if(imgname === "cocoa") {imgname2 = "心愛"}else if(imgname === "tippy") {imgname2 = "提比"}else if(imgname === "other") {imgname2 = "分享餐";money="35"}else if(imgname === "Gawr") {imgname2 = "古拉[Gura]"}else if(imgname === "fubuki") {imgname2 = "白上吹雪[狐狸]"}else if(imgname === "chen") {imgname2 = "(八雲)橙 [小喵]"}else if(imgname === "shota") {imgname2 = "正太"}else if(imgname === "Nakkar") {imgname2 = "Nakkar"}else if(imgname === "loli") {imgname2 = "蘿莉"}else if(imgname === "vtuner") {imgname2 = "Vtuner"}else if(imgname === "peko") {imgname2 = "免田佩克拉"}
+   document.getElementById('order').innerHTML = "☕你點了一隻 "+nsfws+imgname2+"<br>並花了"+money+"$<br>你剩餘 "+user_data.money+"$"
+   let tm = new Date()
+   document.getElementById('time').innerHTML = tm.getHours() +":"+ tm.getMinutes()
+   document.getElementById('again').innerHTML = '<a href="'+document.documentURI+'">再點一次'+nsfws+imgname2+'</a>'
+})()
+   </script>
+   <body>
+      <br>
+       <div class="avatar"><img src="/img/chinocmd.jpg" width="50" height="50"></div><b style="color: #257afa;">智乃小幫手</b> &nbsp;&nbsp;<b style="color: rgb(159, 213, 255);font-size: 12px;">今天 <b id="time"></b></b>
+       <h3><p id="order">讀取資料...</p></h3>
+       <p id="daily">讀取圖片....</p>
+       <p id="again">loading...</p>
+        <br>
+      <a href="/cmd">點我回到指令區</a> | <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

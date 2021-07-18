@@ -1,0 +1,23 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+      <title>
+         發生錯誤!
+      </title>   
+   </head>
+   <body>
+       <br>
+       <h2>請填入伺服器ID來操控音樂狀態!</h2>
+       <br>
+       <form method="post" action="/music/search">
+    <input type="search" name="server" placeholder="請填入伺服器ID" pattern="[0-9]{18,}" autocomplete="off" style="width:300px;"><br>
+    <input type="submit" value="確認">
+    </form><br>
+       <br>
+       備註: 你必須為DJ或管理員才能操控音樂狀態,否則只能預覽
+       <br><br>
+      <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

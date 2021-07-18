@@ -1,0 +1,29 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+   </head>
+   <script>
+    (async() => {
+       setTimeout(() => {
+          window.close(); 
+       }, 5000);
+    })()
+    </script>
+   <body>
+      <h2>儲存發生問題!</h2>
+      因為內容存在問題所以此資料請求無效!<br>
+      請檢查以下是否有問題:<br><br>
+      1. 未填頻道<br>
+      2. 驗證發生錯誤<br>
+      3. 非法文字輸入<br>
+      4. 按太快<br><br>
+      實際錯誤: <%= Error %>
+      <br>
+      <br>
+       <input onclick="window.close();" value="關閉視窗" type="button">
+        <br>
+      <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

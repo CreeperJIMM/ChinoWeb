@@ -1,0 +1,28 @@
+<html>
+   <link rel="stylesheet" href="/css/main.css">
+   <style type="/css/main.css"></style>
+   <link rel="stylesheet" href="/css/userinfo.css">
+   <style type="/css/userinfo.css"></style>
+   <head>
+      <title>
+         智乃小幫手官方網站
+      </title>
+   </head>
+   <script src="/js/getinfo.js"></script>
+   <script src="/js/dashboard.js"></script>
+   <script>
+      $(document).ready(function(){
+      $("form").on('submit',function() {guildset()})})
+   </script>
+       <body>
+         <p id="guildmenu">◀</p>
+         <div class="servers">            
+            <ul><p id="myself"></p></ul>
+            <ul><p id="guilds"><a href="/nofondguild"><img id="Noguild" border="0"  style="margin-top: -5px; margin-left: -35px;" src="https://i.imgur.com/8GljUmB.jpg" title="Missing server?" width="50" height="50" alien="rig"></a></p></ul>
+         </div>
+         <p id="hi">Data reading ... please wait a few seconds!</p>
+         <p id="loading"></p>
+         <p id="guild">Server language: <br>bot trigger:  <br><br>Welcome message:<br>Join channel:<select name="channel"><option>loading...</option></select><input type="text" name="join" value="loading..." autocomplete="off" style="width:300px;"><br><input type="reset" value="reset"><input type="submit" value="done"><br>Leave message:<br>Leave channel:<select name="channel"><option>Loading...</option></select></p>
+        <br>
+      </body>
+</html>

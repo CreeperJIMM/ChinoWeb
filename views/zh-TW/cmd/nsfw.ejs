@@ -1,0 +1,33 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+   </head>
+   <script src="/js/getinfo.js"></script>
+   <script>
+    (async() => {
+        let url = new URL(document.documentURI),urls= "";
+        let ad = {ok:false,url:document.referrer}
+        if(document.referrer) {
+      if(document.referrer == "http://boo2.tw/") {
+         ad = {ok: true,url: document.referrer}
+         let owo= writeNsfwAD(ad.url)
+      }}
+        urls= 'cmd?cmd='+url.searchParams.get('cmd2')+'&img='+url.searchParams.get("img")+'&nsfw=true'
+        setTimeout(() => {document.getElementById('yes').innerHTML = '<a href="'+urls+'">是</a> | <a href="/main">否</a>'}, 1200);
+    })()
+   </script>
+   <body>
+       <h1>
+           ⚠警告!!⚠
+       </h1>
+       <h3>
+           你是否年滿18
+           否則禁止進入本區
+           <p id="yes">請等幾秒... | <a href="/main">否</a></p>
+       </h3>
+        <br>
+      <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

@@ -1,0 +1,133 @@
+<html lang="zh-Hant">
+    <head>
+        <style type="/css/index.css"></style>
+        <style type="/css/main.css"></style>
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="style" href="/css/index.css">
+        <link rel="script" href="/js/layout.js">
+        <script src="/js/layout.js"></script>
+        <script>
+        (async() => {
+           if(isMobileDevice()) {
+            setTimeout(() => {
+                document.getElementById('zoom').innerHTML = '<div id="main"><h1 class="showed" style="top: 670px;">快速創建<br>蘿莉專屬伺服器!</h1></div>'}, 500); 
+           }else{
+               setTimeout(() => {
+                document.getElementById('zoom').innerHTML = '<div id="main"><h1 class="showed">快速創建<br>蘿莉聖地伺服器!</h1></div>'}, 300); 
+           }
+        })()
+        $(document).ready(function() {
+            $("#jump").click(function () {
+            var scroll_offset = $("#web-help").offset();  //得到pos这个div层的offset，包含两个值，top和left
+            $("body,html").animate({
+                scrollTop:scroll_offset.top  //让body的scrollTop等于pos的top，就实现了滚动
+            },500);})
+        $('#languageset').submit(function(e){
+        e.preventDefault();
+        var form = $(this);
+        let d = form.serialize().replace("lang=","")
+        $.ajax({
+        url:'/api/language/set',
+        type: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify({"lang": d}), 
+        cache: false,
+        processData: false,
+        success : function(data) {
+            document.getElementById('langset').innerHTML = data.message
+            setTimeout(() => {
+                window.location.href= document.URL
+            }, 2000);
+        },error: function(data) 
+        {console.log('無法送出');
+        }})});
+        })
+        function invite() {document.location.href="/info"}
+        </script>
+        <title>怕怕的網頁</title>
+        <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    </head>
+    <body style="background: none;">
+        <div class="clour">
+        <div class="web-main">
+            <h3>歡迎來到智乃小幫手的官方網站!</h3>
+        智乃可以成為你的助手<p>且協助你處裡伺服器大小事!
+           <br>讓你的伺服器成為最棒的Rabbit House咖啡廳!
+           <br>
+           <h4>想試試看智乃小幫手的指令嗎? <a href="/cmd">點我!</a></h4>
+            <img src="/img/chino.jpg" alt= "智乃uwu" width="200" style="float: left">  
+    </div>
+    <div id="web-main1-1">        
+        <a href="/chino">歐內醬?</a>
+        <br>
+        <p id="zoom"></p>
+        <br><br><br><br><br>
+        <div class="buttons">
+        <div>
+            <button ip="invite" onclick="invite()">邀請</button>
+        </div>
+        <div>
+        <button id="jump"> 特色</button>
+    </div>
+    </div>
+    </div>
+   </div>
+    <div id="web-help">
+    <div class="web-main2">
+        <br>
+        <img src="https://i.imgur.com/voJeub8.jpg" width="46%">        
+        <h2>你可以使用高科技的指令</h2>
+        <br>
+    </div>
+    <div class="web-main3">
+        <br>
+        <img src="https://i.imgur.com/zeuY1vC.jpeg" width="46%">        
+        <h2>或者點一隻智乃療癒心靈</h2>
+    </div>
+    <div class="web-main4">
+        <br>
+        <img src="https://i.imgur.com/DlH2qGV.jpg" width="60%">        
+        <h2>連點歌都不成問題! <br>也可以線上控制喔! <a href="/music">[點我]</a><font size="2"><br>※僅限智乃小幫手#5407</font></h2>
+        <br><br><br>
+    </div>
+    <div class="web-main5">
+        <h1>不要猶豫了!</h1>
+        <h3>
+            邀請智乃小幫手是你的首選之一!
+            <a href="/info">[點我]</a> 邀請!
+            <br>
+            <img src="https://i.imgur.com/WU4wN9p.jpg" width="40%">
+        </h3>
+        <br><br><br>
+    </div>
+</div>
+<div id="footer">
+        <div id="ft-copy">
+        <p style="color: white;font-weight: bold;">智乃小幫手</p>
+        <p style="color: dimgray;">版權所有 © 2020-2021</p>
+    </div>
+    <div id="ft-url">
+        <a href="/main">主頁</a><br>
+        <a href="/about/chino">認識智乃</a><br>
+        <a href="/info">機器人資料</a><br>
+        <a href="/about/me">關於</a><br>
+    </div>
+    <div id="ft-user">
+        <a href="/login/discord">用戶專區</a><br>
+        <a href="/cmd">指令專區</a><br>
+        <a href="/dashboard/">伺服器專區</a><br>
+        <a href="/music/">音樂控制區</a><br>
+    </div>
+</div>
+<form id="languageset" method='post'>
+<select name="lang" id="language">
+    <option value="null">語言設置</option>
+    <option value="zh_TW">🇹🇼繁體中文</option>
+    <option value="en_US">🇺🇸英文</option>
+    <option value="ja_JP">🇯🇵日文</option>
+</select>
+<button type='submit' style="height: 40px; width: 50px;">確認</button>
+<text id="langset" style="color: crimson;"></text>
+</form>
+ </body>
+</html>

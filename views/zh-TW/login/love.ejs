@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/main.css">
+        <style type="/css/main.css"></style>
+    </head>
+    <script src="/js/getinfo.js"></script>
+    <script>
+    (async() => {
+    var word = await getData()
+    let userS = await getUser(word.id);
+    if(!userS.picture) document.getElementById('picture').innerHTML = "請先登入!!"
+    let love = userS.picture.love
+    love.forEach(element => {
+        document.getElementById('picture').innerHTML = document.getElementById('picture').innerHTML + 
+        `
+        <div id="pic">
+            ${element.file}<br>
+            <img width="20%" src="${element.url}" title="${element.file}" alt="${element.name}">
+        </div>
+        `
+    });
+    if(love.length <= 0) return document.getElementById('picture').innerHTML = "你的收藏沒有圖片!<br>去discord點隻智乃且按收藏吧!<br>收藏的圖會出現在這邊."
+    document.getElementById('picture').innerHTML = document.getElementById('picture').innerHTML + `<div id="floor">電腦可以右鍵另存圖片<br>手機可以長按另存圖片</div>`
+})()
+    </script>
+    </html>
+    <body>
+        <h2>你的收藏</h2>
+        <p id="picture"></p>
+    </body>

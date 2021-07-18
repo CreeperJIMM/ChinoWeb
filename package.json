@@ -1,0 +1,38 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azteam/cloudflare-api": "^1.0.50",
+    "body-parser": "^1.19.0",
+    "cloudflare": "^2.7.0",
+    "cookie-parser": "^1.4.5",
+    "ddos": "^0.2.1",
+    "discord-oauth2": "^2.6.0",
+    "discord.js": "^12.5.1",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-ip-block": "^0.1.2",
+    "express-partials": "^0.3.0",
+    "express-validator": "^6.10.0",
+    "fetch": "^1.1.0",
+    "fs": "^0.0.1-security",
+    "helmet": "^4.6.0",
+    "html": "^1.0.0",
+    "ip": "^1.1.5",
+    "minimist": "^1.2.5",
+    "mongodb": "^4.0.0",
+    "morgan": "^1.10.0",
+    "node-fetch": "^2.6.1",
+    "public-ip": "^4.0.3",
+    "ws": "^7.4.6",
+    "xss": "^1.0.8",
+    "ytdl-core": "^4.5.0"
+  }
+}

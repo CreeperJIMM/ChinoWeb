@@ -1,0 +1,34 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+   </head>
+   <script src="/js/getinfo.js"></script><script>
+          (async() => {
+   var word = await getData()
+   var daily = await getdaily();
+   let user_data = await getUser(word.id);
+   daily = daily.toString()
+   setTimeout((async) => {
+       if(daily === "true") {
+    document.getElementById('daily').innerHTML =  "<h2>You have received your daily 50$! </h2> <br> You have signed continuously "+user_data.worktoal.work+" day<br>So you can get extra "+(user_data.worktoal.work)*5+"$<br>Remember that I often come to the Rabbit house. ˋuwuˊ<br>Now your money: "+user_data.money+"$<br><br>"+word.username+"💰Salary!"
+   }else if(daily === "false") {
+    document.getElementById('daily').innerHTML =  "❌You have already received it.!!"
+   }else{
+    document.getElementById('daily').innerHTML =  "error! Please try again later."
+   }   
+   }, 400);
+
+   let tm = new Date()
+   document.getElementById('time').innerHTML = tm.getHours() +":"+ tm.getMinutes()
+})()
+   </script>
+   <body>
+       <div class="avatar"><img src="/img/chinocmd.jpg" width="50" height="50"></div><b style="color: #257afa;">Chino Helper</b> &nbsp;&nbsp;<b style="color: rgb(159, 213, 255);font-size: 12px;">Today <b id="time"></b></b>
+       <h3>
+       <p id="daily">loading the data...</p></h3>
+        <br>
+      <a href="/cmd">Click me return to the command area</a> | <a href="/main">Click me return home</a>
+      <br>
+   </body>
+</html>

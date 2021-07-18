@@ -1,0 +1,37 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+      <title>
+         發生錯誤!
+      </title>   
+   </head>
+   <script src="/js/getinfo.js"></script><script>
+          (async() => {
+   var word = await getData()
+   var daily = await getdaily();
+   let user_data = await getUser(word.id);
+   daily = daily.toString()
+   setTimeout((async) => {
+       if(daily === "true") {
+    document.getElementById('daily').innerHTML =  "<h2>你已領取你的每日50薪資!</h2><br>你已連續簽到 "+user_data.worktoal.work+" 天<br>所以你能領到額外的 "+(user_data.worktoal.work)*5+"$<br>記得常來咖啡店工作阿uwu<br>現在你的金錢: "+user_data.money+"$<br><br>"+word.username+"💰發薪水囉!"
+   }else if(daily === "false") {
+    document.getElementById('daily').innerHTML =  "❌你已經領過了!! 很貪心喔uwu"
+   }else{
+    document.getElementById('daily').innerHTML =  "發生錯誤! 請稍後再試."
+   }   
+   }, 400);
+
+   let tm = new Date()
+   document.getElementById('time').innerHTML = tm.getHours() +":"+ tm.getMinutes()
+})()
+   </script>
+   <body>
+       <div class="avatar"><img src="/img/chinocmd.jpg" width="50" height="50"></div><b style="color: #257afa;">智乃小幫手</b> &nbsp;&nbsp;<b style="color: rgb(159, 213, 255);font-size: 12px;">今天 <b id="time"></b></b>
+       <h3>
+       <p id="daily">讀取資料中...</p></h3>
+        <br>
+      <a href="/cmd">點我回到指令區</a> | <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

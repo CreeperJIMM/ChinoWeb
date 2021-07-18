@@ -1,0 +1,24 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>  
+   </head>
+   <script src="/js/getinfo.js"></script><script>
+          (async() => {
+             var word = await getData()
+   document.getElementById('avatar').innerHTML = await word.username+" 's avatar<br>"+'<img id="user_avatar" src="https://cdn.discordapp.com/avatars/'+word.id+"/"+word.avatar+'?size=1024" title="'+word.username+'" width="40%" height="40%" alien="rig">'
+   let tm = new Date()
+   document.getElementById('time').innerHTML = tm.getHours() +":"+ tm.getMinutes()
+})()
+   </script>
+   <body>
+       <div class="avatar"><img src="/img/chinocmd.jpg" width="50" height="50"></div><b style="color: #257afa;">Chino helper</b> &nbsp;&nbsp;<b style="color: rgb(159, 213, 255);font-size: 12px;">Today <b id="time"></b></b>
+       <h3>
+       <p id="avatar">
+
+       </p></h3>
+        <br>
+      <a href="/cmd">Click me return to the command area</a> | <a href="/main">Click me return home</a>
+      <br>
+   </body>
+</html>

@@ -1,0 +1,30 @@
+<html>
+   <link rel="stylesheet" href="/css/main.css">
+   <style type="/css/main.css"></style>
+   <link rel="stylesheet" href="/css/userinfo.css">
+   <style type="/css/userinfo.css"></style>
+   <head>
+      <title>
+         智乃小幫手官方網站
+      </title>
+   </head>
+   <script src="/js/getinfo.js"></script>
+   <script src="/js/dash.js"></script>
+   <script>
+      $(document).ready(function(){
+      $("form").on('submit',function() {guildset()})})
+   </script>
+       <body>
+         <p id="guildmenu">◀</p>
+         <div class="servers">            
+            <ul><p id="myself"></p></ul>
+            <ul><p id="guilds"><a href="/nofondguild"><img id="Noguild" border="0"  style="margin-top: -5px; margin-left: -35px;" src="https://i.imgur.com/8GljUmB.jpg" title="找不到想要的伺服器嗎?" width="50" height="50" alien="rig"></a></p></ul>
+         </div>
+         <p id="hi">資料讀取中...請等幾秒!</p>
+         <p id="loading"></p>
+         <br>
+         <br>
+         <h2>請在左側選單選擇要管理的伺服器!</h2>
+        <br>
+      </body>
+</html>

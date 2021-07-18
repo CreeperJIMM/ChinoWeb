@@ -1,0 +1,28 @@
+<html>
+   <link rel="stylesheet" href="/css/main.css">
+   <style type="/css/main.css"></style>
+   <link rel="stylesheet" href="/css/userinfo.css">
+   <style type="/css/userinfo.css"></style>
+   <head>
+      <title>
+         智乃小幫手官方網站
+      </title>
+   </head>
+   <script src="/js/getinfo.js"></script>
+   <script src="/js/dashboard.js"></script>
+   <script>
+      $(document).ready(function(){
+      $("form").on('submit',function() {guildset()})})
+   </script>
+       <body>
+         <p id="guildmenu">◀</p>
+         <div class="servers">            
+            <ul><p id="myself"></p></ul>
+            <ul><p id="guilds"><a href="/nofondguild"><img id="Noguild" border="0"  style="margin-top: -5px; margin-left: -35px;" src="https://i.imgur.com/8GljUmB.jpg" title="找不到想要的伺服器嗎?" width="50" height="50" alien="rig"></a></p></ul>
+         </div>
+         <p id="hi">資料讀取中...請等幾秒!</p>
+         <p id="loading"></p>
+         <p id="guild">伺服器語言: <br>機器人觸發:  <br><br>歡迎訊息:<br>加入頻道:<select name="channel"><option>讀取中...</option></select><input type="text" name="join" value="讀取中..." autocomplete="off" style="width:300px;"><br><input type="reset" value="重設"><input type="submit" value="確定"><br>離開訊息:<br>離開頻道:<select name="channel"><option>讀取中...</option></select></p>
+        <br>
+      </body>
+</html>

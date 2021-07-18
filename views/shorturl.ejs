@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/main.css">
+        <style type="/css/main.css"></style>
+    </head>
+    <script>
+    let url = new URL(document.URL)
+    let id = "null"
+    if(url.pathname.startsWith("/shorturl/")) {
+    id = url.pathname.replace("/shorturl/","")}else if(url.pathname.startsWith("/s/")) {
+    id = url.pathname.replace("/s/","")}
+    $(document).ready(function() {
+        $('#textpost').submit(function(e){
+        e.preventDefault();
+        var form = $(this);
+        let d = form.serialize().replace("text=","")
+        if(d === "" || d === null) {
+            document.getElementById('message').innerHTML = "密碼不能為空!"
+            return setTimeout(() => {document.getElementById('message').innerHTML = ""}, 3000);
+        }
+        $.ajax({
+        url:'/api/shorturl',
+        type: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify({"text": d,"id":id}), 
+        cache: false,
+        processData: false,
+        success : function(data) {
+        if(data.ok === false) {
+            if(data.Error === "Password_error") {
+                document.getElementById('message').innerHTML = "密碼錯誤!"
+                setTimeout(() => {document.getElementById('message').innerHTML = ""}, 3000);
+        }else if(data.Error === "ID_error") {window.location.href= "/main"}
+        }else{
+        switch (data.data.type) {
+            case "img":
+                document.getElementById('textpost').innerHTML = "恭喜過關"
+                if(window.screen.availWidth > 410) {
+                document.getElementById('pass').innerHTML = `<img src="${data.data.url}" width="32%">`;}else{
+                document.getElementById('pass').innerHTML = `<img src="${data.data.url}" width="80%">`;}
+                break;
+            case "url":
+                window.location.href = data.data.url
+                break;
+        }
+        };},error: function(data) 
+        {console.log('無法送出');
+        }})});
+        })
+    </script>
+    </html>
+    <body>
+        <p id="text"> 
+            <p id="message"></p>
+            <form id="textpost" method="post">請輸入通關密碼<br><input name="text" type="text" autocomplete="off" placeholder="通關密碼"><input type="submit" value="送出"></form></p>
+        <p id="pass"></p>
+    </body>

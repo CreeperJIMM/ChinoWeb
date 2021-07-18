@@ -1,0 +1,27 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+      <title>
+         發生錯誤!
+      </title>   
+   </head>
+   <script src="/js/getinfo.js"></script><script>
+          (async() => {
+             var word = await getData()
+   document.getElementById('avatar').innerHTML = await word.username+" 的頭貼<br>"+'<img id="user_avatar" src="https://cdn.discordapp.com/avatars/'+word.id+"/"+word.avatar+'?size=1024" title="'+word.username+'" width="40%" height="40%" alien="rig">'
+   let tm = new Date()
+   document.getElementById('time').innerHTML = tm.getHours() +":"+ tm.getMinutes()
+})()
+   </script>
+   <body>
+       <div class="avatar"><img src="/img/chinocmd.jpg" width="50" height="50"></div><b style="color: #257afa;">智乃小幫手</b> &nbsp;&nbsp;<b style="color: rgb(159, 213, 255);font-size: 12px;">今天 <b id="time"></b></b>
+       <h3>
+       <p id="avatar">
+
+       </p></h3>
+        <br>
+      <a href="/cmd">點我回到指令區</a> | <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

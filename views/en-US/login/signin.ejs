@@ -1,0 +1,61 @@
+<html>
+   <link rel="stylesheet" href="/css/main.css">
+   <style type="/css/main.css"></style>
+   <link rel="stylesheet" href="/css/userinfo.css">
+   <style type="/css/userinfo.css"></style>
+   <head>
+      <title>
+         智乃小幫手官方網站
+      </title>
+   </head>
+   <script src="/js/getinfo.js"></script>
+   <script src="/js/login.js"></script>
+   <script>
+      $(document).ready(function() {
+        $('#languageset').submit(function(e){
+        e.preventDefault();var form = $(this);
+        let d = form.serialize().replace("lang=","")
+        $.ajax({url:'/api/language/set',type: "POST",contentType: 'application/json',data: JSON.stringify({"lang": d}), 
+        cache: false,
+        processData: false,
+        success : function(data) {
+            document.getElementById('langset').innerHTML = data.message
+            setTimeout(() => {
+                window.location.href= document.URL
+            }, 2000);
+        },error: function(data) 
+        {console.log('無法送出');
+        }})});});
+   </script>
+       <body>
+         <p id="guildmenu">◀</p>
+         <div class="servers">
+            <ul><p id="myself"></p></ul>
+            <ul><p id="guilds"></p></ul>
+         </div>
+         <p id="hi">Data reading .... Please wait a few seconds!</p><br>
+         <font size="5">Want to try it <u>online</u> Chino helper commands? <a href="/cmd">click me!</a></font>
+         <br>---For details, please type "cr!ui" command in Discord!---
+
+         <div class="datas">     
+         <p id="level" style="background-color:rgba(55, 41, 41, 0.645);"></p>
+         <p id="money"></p>
+         <p id="work"></p>
+         <p id="piture"></p>
+         <p id="piture2"></p>
+         <p id="host"></p><p id="pet"></p>
+         <p id="worktime"></p>
+      </div> 
+        <br>
+        <form id="languageset" method='post'>
+         <select name="lang" id="language">
+             <option value="null">language settings</option>
+             <option value="zh_TW">🇹🇼Chinese</option>
+             <option value="en_US">🇺🇸English</option>
+             <option value="ja_JP">🇯🇵Japanese</option>
+         </select>
+         <button type='submit' style="height: 40px; width: 50px;">confirm</button>
+         <text id="langset" style="color: crimson;"></text>
+         </form>
+      </body>
+</html>
