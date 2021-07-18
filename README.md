@@ -17,7 +17,7 @@ By Creeper.
 <b>但請不要直接複製到你的代碼中!</b>
 
 BY 苦力怕怕
-    
-    ///// All rights reserved. /////  
+
+///// All rights reserved. /////  
     </body>
   </html>
