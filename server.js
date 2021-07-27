@@ -84,7 +84,6 @@ setInterval(() => {
     }
 }, 500);
 let verify = new Set();
-
 //加密
 const crypto = require('crypto');
 function aesEncode(data, key) {
@@ -103,14 +102,14 @@ function aesDecode(encrypted, key) {
 
 function writeoauthToken(token,id) {
     let code = aesEncode(token,id)
-    var b = new Buffer(code);
+    var b = Buffer.from(code);
     var s = b.toString('base64');
     return s;
 }
 
 function getoauthToken(Detoken,id)  {
     if(!id) return Detoken;
-    var b = new Buffer(Detoken, 'base64')
+    var b = Buffer.from(Detoken, 'base64')
     var s = b.toString();
     let code = aesDecode(s,id)
     return code;
@@ -1540,24 +1539,15 @@ fetch.default('https://api.my-ip.io/ip.json',
     update()
     //update2()
 })
-/*
-fetch.default('https://api.cloudflare.com/client/v4/user/tokens/verify', 
-{method: 'GET',
- headers:{
-    "Authorization": "Bearer bvdQ3HwMMKckXN98CczQkzfOXHauJ6144lL3m6y1",
-    "Content-Type": "application/json"
-},}).then(async(data) => {return data.json()}).then((data2) => {
-    if(data2.success) {
-console.log("成功")}})
-*/
+let tokencloud = require("./token.json")
 function update() {
     let bodys = {"type":"A","name":".","content":IP,"proxied": true}
 bodys = JSON.stringify(bodys)
 fetch.default('https://api.cloudflare.com/client/v4/zones/e3e93f8298056a1850b209aa25d56d71/dns_records', 
 {method: 'GET',
  headers: {
-    "X-Auth-Email": "jimmcreeper@gmail.com",
-    "X-Auth-Key": "3f941828a98013d4a04abd69b1c6f6340842f",
+    "X-Auth-Email": tokencloud.email,
+    "X-Auth-Key": tokencloud['cloud-key'],
     "Content-Type": "application/json"
  },
 }).then(async(data) => {
@@ -1566,8 +1556,8 @@ fetch.default('https://api.cloudflare.com/client/v4/zones/e3e93f8298056a1850b209
     fetch.default('https://api.cloudflare.com/client/v4/zones/e3e93f8298056a1850b209aa25d56d71/dns_records/'+data2.result[0].id, 
     {method: 'PUT',
      headers: {
-        "X-Auth-Email": "jimmcreeper@gmail.com",
-        "X-Auth-Key": "3f941828a98013d4a04abd69b1c6f6340842f",
+        "X-Auth-Email": tokencloud.email,
+        "X-Auth-Key": tokencloud['cloud-key'],
         "Content-Type": "application/json"
      },
      body: bodys
@@ -1588,20 +1578,3 @@ clientDB.on('close', function() {
 
 client.login(token).then(() => {
     client2.login(token2);})
-
-
-
-/*  user_data: {
-    user: 'z7d0OZOJaM7s9JukLEqAE6i5uCvbnx',
-    data: {
-      id: '546144403958398988',
-      username: '苦力怕怕',
-      avatar: 'de4001850d60e00ec9ffb5086e03353e',
-      discriminator: '8558',
-      public_flags: 64,
-      flags: 64,
-      locale: 'zh-TW',
-      mfa_enabled: true
-    }
-  },
-  /*/ 
