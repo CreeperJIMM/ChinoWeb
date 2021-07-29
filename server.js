@@ -381,7 +381,7 @@ app.get('/404', function (req, res) {
 app.get('/music/chino',function(req,res) {
     if(cooldown(req.ip,req,res)) return;
     res.status(403)
-    setTimeout(() => {res.sendFile('C:/Users/ASUS/Desktop/DiscordBot/web/chino.mp3')}, 1000);
+    setTimeout(() => {res.sendFile(__dirname +'/public/sound/chinobgm.mp3')}, 1000);
 })
 /*
 app.get('/contact', function (req, res) {
