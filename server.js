@@ -58,7 +58,7 @@ const server = app.listen(port)
 
 const wss = new SocketServer({ server })
 
-let {banlist , why} = require('../[新]DiscordBot/banlist.json')
+let {banlist , why} = require('../DiscordBot/banlist.json')
 
 function cooldown(ip,req,res) {
     if(cooldowns.has(ip)) {
@@ -127,7 +127,7 @@ app.route('/')
     if(verify.has(req.ip)) return res.redirect("/main") 
     console.log("[!] "+req.ip +" [to] "+req.hostname)
     if(req.hostname === "dckabicord.com" || req.hostname === "www.dckabicord.com" || req.hostname === "www.chinohelper.tk" || req.hostname === "chinohelper.tk") {
-    //res.sendFile('/Users/ASUS/Desktop/[新]DiscordBot/web/verify.html')
+    //res.sendFile('/Users/ASUS/Desktop/DiscordBot/web/verify.html')
     //res.status(403)
     setTimeout(() => {
         res.status(302).redirect("/main")
@@ -217,7 +217,7 @@ app.get('/login/signin',ipBlock,function (req,res) {
             },
             body: new URLSearchParams({
                 "client_id": "731408794948730961",
-                'client_secret':"zZ9NGwzNEcac9q7x2AUlLBoaxkIT6bqK",
+                'client_secret':tokencloud.discordtoken,
                 'grant_type': 'authorization_code',
                 "code": token,
                 "refresh_token": token,
@@ -381,7 +381,7 @@ app.get('/404', function (req, res) {
 app.get('/music/chino',function(req,res) {
     if(cooldown(req.ip,req,res)) return;
     res.status(403)
-    setTimeout(() => {res.sendFile('C:/Users/ASUS/Desktop/[新]DiscordBot/web/chino.mp3')}, 1000);
+    setTimeout(() => {res.sendFile('C:/Users/ASUS/Desktop/DiscordBot/web/chino.mp3')}, 1000);
 })
 /*
 app.get('/contact', function (req, res) {
@@ -453,12 +453,12 @@ app.get('/login/logout', async function (req, res) {
 // ============================================================================
 const Discord = require("discord.js");
 const client = new Discord.Client()
-const { prefix, token } = require('../[新]DiscordBot/config.json');
+const { prefix, token } = require('../DiscordBot/config.json');
 client.on('ready',() => {
   console.log("login in! \nin "+client.user.username)
 })
 const client2 = new Discord.Client()
-let token2 = require('../[新]DiscordBot/config2.json').token
+let token2 = require('../DiscordBot/config2.json').token
 
 client2.on('ready',() => {
   console.log("login in! \nin "+client2.user.username)
@@ -467,7 +467,7 @@ client2.on('ready',() => {
 const MongoClient = require('mongodb').MongoClient;
 const e = require('express');
 const { WSAEWOULDBLOCK, UV_FS_O_FILEMAP } = require('constants');
-const uri = require("../[新]DiscordBot/token.json");
+const uri = require("../DiscordBot/token.json");
 const clientDB = new MongoClient(uri.mongo, { useNewUrlParser: true, useUnifiedTopology: true });
 clientDB.connect(err => {
   console.log("[MangoDB] 連接成功")
@@ -791,13 +791,13 @@ app.route('/api/daily')
       }
       let code = getoauthToken(req.cookies.user.token,req.cookies.user.id)
       oauth.getUser(code).then((data) => {
-        fs.readFile("../[新]DiscordBot/user.json", function(err, dailyInfo) {
+        fs.readFile("../DiscordBot/user.json", function(err, dailyInfo) {
           if (err) return res.json({Error: 'Error_to_get_data0'})
           var daily = dailyInfo.toString();daily = JSON.parse(daily)
           if(daily.daily.indexOf(data.id) != "-1") {return res.json({daily: false})}else{
             loadUser(clientDB,data.id).then((user) => {
             if (user === false) return res.json({Error: 'Error_to_get_data1'})
-            daily.daily.push(data.id);var str2 = JSON.stringify(daily);setTimeout(() => {fs.writeFileSync('../[新]DiscordBot/user.json',str2)}, 1000);
+            daily.daily.push(data.id);var str2 = JSON.stringify(daily);setTimeout(() => {fs.writeFileSync('../DiscordBot/user.json',str2)}, 1000);
             let tody = 50
             user.work++
             let tod = new Date()
@@ -826,13 +826,13 @@ app.route('/api/picture')
     if(!imgaccess.has(req.cookies.user.token)) return res.status(404).json({Error: "No_access_to_get_img"})
     let nsfw = ""
     if(req.query.nsfw === "true") nsfw = "/Nsfw"
-    fs.readdir("../[新]DiscordBot/pitrue/"+req.query.img+nsfw, (err, r) => {
+    fs.readdir("../DiscordBot/pitrue/"+req.query.img+nsfw, (err, r) => {
         let f = req.query.file
-        fs.access('/Users/ASUS/Desktop/[新]DiscordBot/pitrue/'+req.query.img+nsfw+'/'+f,function(err) {
+        fs.access('/Users/ASUS/Desktop/DiscordBot/pitrue/'+req.query.img+nsfw+'/'+f,function(err) {
             if(err) {
                 return res.json({"Error":"No_file_found."})
             }else{
-                res.sendFile('/Users/ASUS/Desktop/[新]DiscordBot/pitrue/'+req.query.img+nsfw+'/'+f);
+                res.sendFile('/Users/ASUS/Desktop/DiscordBot/pitrue/'+req.query.img+nsfw+'/'+f);
                 setTimeout(() => {
                  imgaccess.delete(req.cookies.user.token)}, 15000);
             }
@@ -866,7 +866,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                     if(err) {return res.json({"ok": false,"file": f,error: err})}
                     f = r[Math.floor(Math.random() * r.length)]
                     res.json({"ok": true,"file": f})
@@ -879,7 +879,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f,error: err})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -895,7 +895,7 @@ app.route('/api/picture')
                         imgaccess.add(req.cookies.user.token)
                         var nsfw = "",f= null;
                         if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                        fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                        fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                             if(err) {return res.json({"ok": false,"file": f})}
                             f = r[Math.floor(Math.random() * r.length)]
                             res.json({"ok": true,"file": f})
@@ -908,7 +908,7 @@ app.route('/api/picture')
                         imgaccess.add(req.cookies.user.token)
                         var nsfw = "",f= null;
                         if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                        fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                        fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                             if(err) {return res.json({"ok": false,"file": f})}
                             f = r[Math.floor(Math.random() * r.length)]
                             res.json({"ok": true,"file": f})
@@ -923,7 +923,7 @@ app.route('/api/picture')
                         imgaccess.add(req.cookies.user.token)
                         var nsfw = "",f= null;
                         if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                        fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                        fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                             if(err) {return res.json({"ok": false,"file": f})}
                             f = r[Math.floor(Math.random() * r.length)]
                             res.json({"ok": true,"file": f})
@@ -937,7 +937,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -952,7 +952,7 @@ app.route('/api/picture')
                         imgaccess.add(req.cookies.user.token)
                         var nsfw = "",f= null;
                         if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                        fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                        fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                             if(err) {return res.json({"ok": false,"file": f})}
                             f = r[Math.floor(Math.random() * r.length)]
                             res.json({"ok": true,"file": f})
@@ -965,7 +965,7 @@ app.route('/api/picture')
                         imgaccess.add(req.cookies.user.token)
                         var nsfw = "",f= null;
                         if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                        fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                        fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                             if(err) {return res.json({"ok": false,"file": f})}
                             f = r[Math.floor(Math.random() * r.length)]
                             res.json({"ok": true,"file": f})
@@ -980,7 +980,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -995,7 +995,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1008,7 +1008,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1024,7 +1024,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1037,7 +1037,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1052,7 +1052,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1066,7 +1066,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1080,7 +1080,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1094,7 +1094,7 @@ app.route('/api/picture')
                     imgaccess.add(req.cookies.user.token)
                     var nsfw = "",f= null;
                     if(req.body.nsfw === "true") nsfw = "/Nsfw"
-                    fs.readdir("../[新]DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
+                    fs.readdir("../DiscordBot/pitrue/"+req.body.img+nsfw, (err, r) => {
                         if(err) {return res.json({"ok": false,"file": f})}
                         f = r[Math.floor(Math.random() * r.length)]
                         res.json({"ok": true,"file": f})
@@ -1546,8 +1546,7 @@ bodys = JSON.stringify(bodys)
 fetch.default('https://api.cloudflare.com/client/v4/zones/e3e93f8298056a1850b209aa25d56d71/dns_records', 
 {method: 'GET',
  headers: {
-    "X-Auth-Email": tokencloud.email,
-    "X-Auth-Key": tokencloud['cloud-key'],
+    "Authorization": tokencloud.Authorization,
     "Content-Type": "application/json"
  },
 }).then(async(data) => {
@@ -1556,8 +1555,7 @@ fetch.default('https://api.cloudflare.com/client/v4/zones/e3e93f8298056a1850b209
     fetch.default('https://api.cloudflare.com/client/v4/zones/e3e93f8298056a1850b209aa25d56d71/dns_records/'+data2.result[0].id, 
     {method: 'PUT',
      headers: {
-        "X-Auth-Email": tokencloud.email,
-        "X-Auth-Key": tokencloud['cloud-key'],
+        "Authorization": tokencloud.Authorization,
         "Content-Type": "application/json"
      },
      body: bodys
