@@ -1,0 +1,60 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+   </head>
+<style>
+    .g-signin2 {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    }
+</style>
+   <script src="https://apis.google.com/js/platform.js" async defer></script>
+   <script>
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      document.getElementById('g-logout').innerHTML = ""
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+      });
+    }
+    let word = false
+   function onSignIn(googleUser) {
+      var id_token = googleUser.getAuthResponse().id_token;
+    var profile = googleUser.getBasicProfile();
+    console.log(profile.Me)
+    if(profile) document.getElementById('g-logout').innerHTML = `哈囉! ${profile.Me}<br><a href="#" onclick="signOut();">Google登出</a>`
+    setTimeout(async() => {
+      if(word.Error) {
+         let logins = await getGoogleData(id_token)
+         if(logins.success) {
+            window.location = logins.href
+         }
+      }
+    }, 1000);
+   }
+   (async() => {
+      word = await getData()
+      if(!word.Error) document.getElementById('d-logout').innerHTML = `哈囉! ${word.username}#${word.discriminator}<br><a href="/login/logout">Discord登出</a>`
+    })()
+  </script>
+   <meta name="google-signin-client_id" content="877162245319-vkdpkj2v6shsu8ue0rlvb5jrgicinhuo.apps.googleusercontent.com">
+   <body>
+        <br>
+        <h2>登入方式</h2>
+        <button value="Discord登入" style="width:120px; height:36px" onclick="location.href='/login/discord'"><img src="/img/discord.svg" width="20px" height="20px"> Discord登入</button>
+        <div id="d-logout"></div>
+        <h4>第三方登入Discord</h4>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <div id="g-logout"></div>
+        <div id="g-loginto"></div>
+        <br>
+        <a href="/login/link">🔗將第三方登入連結discord</a>    
+        <br>
+        <br>
+        <br>
+      <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

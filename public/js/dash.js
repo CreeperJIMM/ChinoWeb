@@ -44,11 +44,13 @@ $(document).ready(function(){
     $('#guildmenu').click(function(){
     if(menuset === 0) {
     menuset = 1
+    navigator.vibrate(60);
     document.getElementById('guildmenu').innerHTML = '▶'
   $("#guildmenu").animate({top:'91%'});
   $(".servers").animate({left: '-70px'})
     }else if(menuset = 1) {
        menuset = 0
+       navigator.vibrate(60);
        document.getElementById('guildmenu').innerHTML = '◀'
  $("#guildmenu").animate({top:'150px'});
   $(".servers").animate({left: '0px'})

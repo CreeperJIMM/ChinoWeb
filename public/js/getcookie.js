@@ -40,6 +40,15 @@ var getData = async(token) => {
     }
 }
 
+var getGoogleData = async(token) => {
+    try {
+        let user2 =  await (await fetch('/api/login/google',{method: "POST",body: new URLSearchParams({"idtoken":token})})).json()
+        return user2
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 function clearAllCookie() {
     var keys = document.cookie.match(/[^ =;]+(?=\=)/g);
     if (keys) {

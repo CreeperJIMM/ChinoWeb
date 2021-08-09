@@ -1,0 +1,51 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+   </head>
+<style>
+    .g-signin2 {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    }
+</style>
+   <script src="https://apis.google.com/js/platform.js" async defer></script>
+   <script>
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      document.getElementById('g-logout').innerHTML = ""
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+      });
+    }
+    function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    if(profile) document.getElementById('g-logout').innerHTML = `登入此帳號即可取得discord帳號.<br> ${profile.Me} <a href="/login/link/google"><img src="/img/link.png" title="點我連結" alt="點我連結" width="30px" height="30px" style="margin: 0px 0px -8px 0px"></a> <br>`
+    }
+   (async() => {
+      let word = await getData()
+      if(!word.Error) document.getElementById('d-logout').innerHTML = `將被連結的discord帳號:<br> ${word.username}#${word.discriminator}<br>`
+    })()
+  </script>
+   <meta name="google-signin-client_id" content="877162245319-vkdpkj2v6shsu8ue0rlvb5jrgicinhuo.apps.googleusercontent.com">
+   <body>
+        <br>
+        <h4>將外部登入連結Discord</h4>
+        <button value="Discord登入" style="width:120px; height:36px" onclick="location.href='/login/discord'"><img src="/img/discord.svg" width="20px" height="20px" > Discord登入</button>
+        <div id="d-logout"></div>
+        <b>備註: 若登入discord需重新連結google</b>
+        <h4>第三方登入Discord</h4>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <div id="g-logout"></div>
+        <br>
+        登入後請點擊名字後面的連結按鈕🔗<br>
+        若你授權一次discord就必須再連結一次
+        <br>
+        <br>
+        <a href="/login">回到登入列表</a>    
+        <br>
+      <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

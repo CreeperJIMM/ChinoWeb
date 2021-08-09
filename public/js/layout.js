@@ -6,12 +6,14 @@ function isMobileDevice() {
 function openMenu() {
     $(document).ready(function(){
     $("#Ntop").fadeIn("slow");
+    navigator.vibrate(50);
     document.getElementById('NtopSet').innerHTML = '<span style="font-size:30px;cursor:pointer" onclick="closeMenu()">&thinsp;&times;</span>'
     })
 }
 function closeMenu() {
     $(document).ready(function(){
     $("#Ntop").fadeOut("slow");
+    navigator.vibrate(50);
     document.getElementById('NtopSet').innerHTML = '<span style="font-size:30px;cursor:pointer" onclick="openMenu()">&nbsp;&#9776;</span>'
     })
 }
@@ -22,12 +24,14 @@ setTimeout(() => {
         $('#Nname').fadeIn("slow")
         $('#Nchoose').hide()
         $('#Nword').click(function(){
+            navigator.vibrate(60);
         if(menusetx == 0) {
         menusetx = 1
         let s = document.getElementById('Nname').innerHTML
         $('#Nchoose').slideToggle(500);
         setTimeout(() => {
             let timer = setInterval(() => {
+                navigator.vibrate(20);
                 if(s.length <= 0) {
                     $('#Nname').fadeOut(600)
                     var box = document.querySelector('#Nword');
@@ -69,12 +73,12 @@ if(word.Error == "User_is_banned.") {
 
 if(vaily) document.location.href=url.pathname;
 names = "Discord登入"
-document.getElementById('Nchoose').innerHTML = `|<a href="/login/discord" style="color: mediumspringgreen;">點我登入</a>|`
-let user = '<dc><img id="user_avatar" src="https://i.imgur.com/UWlIo9E.png" title="Discord登入" width="50" height="50" alien="rig"><b id="Nname"></b></dc>';
+document.getElementById('Nchoose').innerHTML = `|<a href="/login" style="color: mediumspringgreen;">點我登入</a>|`
+let user = '<dc><img id="user_avatar" src="https://i.imgur.com/UWlIo9E.png" title="Discord登入" width="50" height="50" alien="rig"><b id="Nname" style="color: #6f6eeb;"></b></dc>';
 if(!word.Error) {
     names = word.username
-    user = `<dc> <img id="user_avatar" src="https://cdn.discordapp.com/avatars/${word.id}/${word.avatar}" title="${word.username}" width="50" height="50" alien="rig"><b id="Nname"></b> </dc>`;
-    document.getElementById('Nchoose').innerHTML = `|<a href="/login/discord" style="color: mediumspringgreen;">個人</a>|<a href="/login/logout" style="color: mediumspringgreen;">登出</a>|`
+    user = `<dc> <img id="user_avatar" src="https://cdn.discordapp.com/avatars/${word.id}/${word.avatar}" title="${word.username}" width="50" height="50" alien="rig"><b id="Nname" style="color: #6f6eeb;"></b> </dc>`;
+    document.getElementById('Nchoose').innerHTML = `|<a href="/login/discord" style="color: mediumspringgreen;">個人</a>|<a href="/login/logout" style="color: mediumspringgreen;">登出</a>|<br>|<a href="/login" style="color: mediumspringgreen;">登入狀態</a>|`
 };
 setTimeout((async) => {document.getElementById('Nword').innerHTML = user}, 50);
 /*

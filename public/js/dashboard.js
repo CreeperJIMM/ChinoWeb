@@ -1,7 +1,7 @@
+let word = null,guild = null;
 async function switchurl(url,id) {
     $("body").css("cursor", "progress");
     history.pushState(null,null,`/dashboard/${id}`)
-
     document.getElementById('loading').innerHTML = '<img src="https://i.imgur.com/Wgja5Fw.gif"  width="80" height="80" alt="讀取中"></img>'
     guildset().then(() => {
         $("body").css("cursor", "default");
@@ -9,8 +9,6 @@ async function switchurl(url,id) {
     })
 }
 async function guildset() {
-    var word = await getData()
-    var guild = await getGuild()
     let guilds = new Array(),that = false,gis = new Array();
     let url = new URL(document.URL)
     var ids = url.pathname.replace("/dashboard/","")
@@ -81,7 +79,7 @@ async function guildset() {
                     option2 = channel[i].name}else{
                 leave.push(`<option>${channel[i].name}</option>`)}
             }}
-            document.getElementById('guild').innerHTML = await `${gis.name}<br><br>
+            document.getElementById('guild').innerHTML = await `<img id="546143306900570112" border="0" style="margin-top: -5px; margin-left: -35px;" src="https://cdn.discordapp.com/icons/${gis.id}/${gis.icon}" title="${gis.name}" width="50" height="50" alien="rig"> <font size="5">${gis.name}</font><br><br>
             <form method="post"  target="_blank" action="/api/guild/setting/${gis.id}">
             <input name="userid" type="hidden" value="${word.id}">
             伺服器語言: <select name="language">
@@ -148,6 +146,8 @@ async function guildset() {
 }
 }
 (async() => {
+    word = await getData()
+    guild = await getGuild()
     guildset()
 })()
 let menuset = 0
@@ -155,11 +155,13 @@ $(document).ready(function(){
     $('#guildmenu').click(function(){
     if(menuset === 0) {
     menuset = 1
+    navigator.vibrate(60);
     document.getElementById('guildmenu').innerHTML = '▶'
   $("#guildmenu").animate({top:'91%'});
   $(".servers").animate({left: '-70px'})
     }else if(menuset = 1) {
        menuset = 0
+       navigator.vibrate(60);
        document.getElementById('guildmenu').innerHTML = '◀'
  $("#guildmenu").animate({top:'150px'});
   $(".servers").animate({left: '0px'})

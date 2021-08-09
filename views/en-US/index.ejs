@@ -18,12 +18,14 @@
         })()
         $(document).ready(function() {
             $("#jump").click(function () {
+            navigator.vibrate(60);
             var scroll_offset = $("#web-help").offset();  //得到pos这个div层的offset，包含两个值，top和left
             $("body,html").animate({
                 scrollTop:scroll_offset.top  //让body的scrollTop等于pos的top，就实现了滚动
             },500);})
         $('#languageset').submit(function(e){
         e.preventDefault();
+        navigator.vibrate(70);
         var form = $(this);
         let d = form.serialize().replace("lang=","")
         $.ajax({
@@ -42,7 +44,7 @@
         {console.log('無法送出');
         }})});
         })
-        function invite() {document.location.href="/info"}
+        function invite() {navigator.vibrate(60);document.location.href="/info"}
         </script>
         <title>怕怕的網頁</title>
         <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />

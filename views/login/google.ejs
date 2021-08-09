@@ -1,0 +1,48 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+   </head>
+<style>
+    .g-signin2 {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    }
+</style>
+   <script src="https://apis.google.com/js/platform.js" async defer></script>
+   <script>
+   function onSignIn(googleUser) {
+      let word = getData()
+       if(word.Error) return document.getElementById("logining").innerHTML = "請先登入Discord!"
+       document.getElementById("logining").innerHTML = "連結google帳號到discord中..."
+      var id_token = googleUser.getAuthResponse().id_token;
+      let data = googleUser.getBasicProfile();
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://dckabicord.com/api/link/google');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.onload = function() {
+         let json = JSON.parse(xhr.responseText)
+         console.log('Signed in as: ' + json.name);
+         if(json.success) {
+            if(json.text === "create") document.getElementById("logining").innerHTML = "已成功連結!<br>現在你可以用google登入了"
+            if(json.text === "update") document.getElementById("logining").innerHTML = "已成功更新資料!<br>現在你可以用google登入了"
+         }else{
+            document.getElementById("logining").innerHTML = "連結google時發生錯誤!<br>"+json.Error
+         }
+      };
+      xhr.send("idtoken="+ id_token+"&email="+ data.Et);
+    }
+  </script>
+   <meta name="google-signin-client_id" content="877162245319-vkdpkj2v6shsu8ue0rlvb5jrgicinhuo.apps.googleusercontent.com">
+   <body>
+        <br>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <h4 id="logining">請登入你的google帳號</h4>
+        <br>
+        <a href="/login">回到登入列表</a>    
+        <br>
+      <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>
