@@ -4,15 +4,18 @@ let url = new URL(document.URL)
 let id = document.URL.replace("https://dckabicord.com/music/","")
 let ws = new WebSocket(`wss://${url.hostname}:/api/ws/music`,id)
 let busy = 0;
+let haslogin = true
 //開啟後執行的動作，指定一個 function 會在連結 WebSocket 後執行
 let closeH = false,timH = false;
 
 ws.onopen = () => {
     console.log('open connection')
+    ws.send(JSON.stringify({type:"ping",cmd:"ping",login: haslogin}))
 }
 (async() => {
 var word = await getData()
 if(word.Error) {
+    haslogin = false
     document.getElementById('ctrl').innerHTML = "(登入獲取最佳體驗)"
     document.getElementById('Addtext').innerHTML = ""
 }
@@ -78,8 +81,9 @@ ws.onerror = err => {
 }
 
 ws.onmessage = event => {
+    let ti = new Date().getTime()
     let data = JSON.parse(event.data)
-    if(data.type === "error") {
+    if(data.type === "error") { 
         if(data.Error === "Not_Found_Music_Bot") {
             document.getElementById('title').innerHTML = data.message
             document.getElementById('player').innerHTML = ""
@@ -92,20 +96,48 @@ ws.onmessage = event => {
         setTimeout(() => {
             document.getElementById('text').innerHTML = ""
         }, 1500);
+    }else if(data.type === "ping") {
+        if(data.type2 === "pingUserTest") {
+            ws.send(JSON.stringify({type:"ping",type2:"pingServerTest",time: ti}))
+            let ms = (parseInt(data.time) - ti)
+            document.getElementById('ping').innerHTML = `↑${ms} /↓ ms`
+            if(data.ms) {
+                document.getElementById('ping').innerHTML = `↑${ms} /↓${data.ms} ms`
+                document.getElementById('ping2').innerHTML = `→ ${data.ms - ms} ms`
+            }
+
+        }
     }else if(data.List) {
         return;
     }else{
         nowdata = data.data
-        playing(data.data)}
+        data = data.data
+        firstload(data)
+        playing(data)}
 }
+let first = false;
+function firstload(data) {
+    if(first === false) {
+        first = true
+        document.getElementById('title').innerHTML = `<img src= ${data.guild.iconURL} width="30px" height="30px"> 在 ${data.guild.name} 播放中`
+    }
+}
+
+let imgurl = ""
+function switchimg(song) {
+    if(song.thumbnail != imgurl) {
+    imgurl = song.thumbnail
+    document.getElementById('img').innerHTML =`<img src="${song.thumbnail}" width="220px" height=auto>`
+    }
+}
+
 function playing(data) {
     timH = true
-    document.getElementById('title').innerHTML = `<img src= ${data.guild.iconURL} width="30px" height="30px"> 在 ${data.guild.name} 播放中`
     let seek = data.seek,song = data.song
     let timeshow = `${Math.floor(seek/60)}:${Math.floor((seek - Math.floor(seek/60)*60) -1)}`
     let timeshow2 = `${Math.floor(song.time/60)}:${(song.time - Math.floor(song.time/60)*60) -1}`
     let timer = (seek/song.time)*100
-    document.getElementById('img').innerHTML =`<img src="${data.song.thumbnail}" width="220px" height=auto>`
+    switchimg(data.song)
     document.getElementById('player').innerHTML = `
     <h3 id="songtitle"><a href="${data.song.url}">${data.song.title}</a></h3>
     <div class="progress" id="time" style="">
@@ -124,7 +156,7 @@ function playing(data) {
         if(t === 1) {
             if(!timH) return clearInterval(timer2)
         }
-        if(t >= 4) clearInterval(timer2)
+        if(t >= 2) clearInterval(timer2)
         if(closeH) return clearInterval(timer2)
         addTime(t)
         t =t+1

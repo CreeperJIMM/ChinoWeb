@@ -1,16 +1,13 @@
 module.exports = function(req,res) {
     switch (req.path) {
         case "/":
-            res.status(302).redirect("/main")
+            res.sendFile(__dirname+'/index.html')
             break;
         case "/main":
-            res.status(302).render("./docs/main")
-            break;
-        case "/back":
-            res.status(302).redirect("https://"+req.hostname.replace("docs.","")+"/main")
+            res.sendFile(__dirname+'/index.html')
             break;
         default:
-            res.status(404).render("./docs/error")
+            res.sendFile(__dirname+'/index.html')
             break;
     }
 }

@@ -6,6 +6,14 @@ async function switchurl(url) {
     })
 }
 (async() => {
+    if(opener) {
+        if(opener.window) {
+            if(opener.window.parent) {
+        opener.window.parent.location.href = "/login/signin"
+        setTimeout(() => {
+            window.close()            
+        }, 500);
+    }}}
     var word = await getData()
     var guild = await getGuild()
     let guilds = new Array(),gis = new Array();
@@ -15,7 +23,8 @@ async function switchurl(url) {
         window.location.href='/login/signin';
     }
     if(!word) {
-        window.location.href='/login/discord';}
+        window.location.href='/login/discord';
+    }
     for (let i = 0; i < guild.length; i++) {
         const gi = guild[i];
         if((gi.permissions & 0x8) == 0x8) {
@@ -35,16 +44,16 @@ async function switchurl(url) {
                 }
         }}
         }
-    $.ajax({})
+    guilds.push(`<a href="/nofondguild"><img id="Noguild" border="0" style="margin-top: -5px; margin-left: -35px;" src="/img/imgs/noguild.jpg" title="找不到想要的伺服器嗎?" width="50" height="50" alien="rig"></a>`)
+    document.getElementById('guilds').innerHTML = await guilds.join("<br>")
     let user8 = await getUser(word.id);
     let save = ""
+    if(!user8) return window.location.href='/login/discord';
     user8.picture.love.forEach(element => {
         save = save+element.file+"<br>"
     });
-    guilds.push(`<a href="/nofondguild"><img id="Noguild" border="0" style="margin-top: -5px; margin-left: -35px;" src="/img/imgs/noguild.jpg" title="找不到想要的伺服器嗎?" width="50" height="50" alien="rig"></a>`)
     document.getElementById('hi').innerHTML = await word.username+"我們又見面惹:)"
     document.getElementById('myself').innerHTML = await `<a href="/login/signin/" onclick="del();return false" ><img id="user_avatar" border="0" style="margin-top: -5px; margin-left: -35px;" src="https://cdn.discordapp.com/avatars/${word.id}/${word.avatar}" title="${word.username}" width="50" height="50" alien="rig"></a><br><a href="/cmd" onclick="" ><img id="user_avatar" border="0" style="margin-top: -5px; margin-left: -35px;" src="/img/chinocmd.jpg" title="智乃小幫手" width="50" height="50" alien="rig"></a>`
-    document.getElementById('guilds').innerHTML = await guilds.join("<br>")
     document.getElementById('money').innerHTML = await "你的金錢: "+ user8.money;
     document.getElementById('level').innerHTML = await `<br><div id="hightline" style="background-color: rgba(0, 0, 0, 0.645);width: 80%;margin:0px auto;color: white">你的等級/經驗值: `+ `Rank ${user8.rank} | Exp: ${user8.exp}  <br>[你還需要 ${((1000+50*user8.rank) - user8.exp)} exp升下一等]</div><br>`;
     document.getElementById('host').innerHTML =  "👨‍👦你的主人: <br>"+ await user8.hostname.replaceAll("\n","<br>");document.getElementById('pet').innerHTML =  "🐶你的寵物: <br>"+ await user8.petname.replaceAll("\n","<br>")

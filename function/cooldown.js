@@ -15,7 +15,7 @@ module.exports = function (ip, req, res, client) {
     setTimeout(() => {
       cooldowns.delete(ip);
       quest - 1;
-    }, 200);
+    }, 30);
   }
 };
 setInterval(() => {
@@ -53,6 +53,9 @@ function root(req, res) {
     return true;
   } else if(req.hostname.startsWith("m")) {
     res.status(302).redirect("https://"+req.hostname.replace("m.","")+path)
+    return true;
+  } else if(req.hostname.startsWith("creeper")) {
+    res.sendFile("C:/Users/ASUS/Desktop/web/html/teachme.html")
     return true;
   } else if(req.hostname.startsWith("api")) {
     res.status(502).json({Error:"This root does not exit."})

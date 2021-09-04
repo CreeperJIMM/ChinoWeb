@@ -20,10 +20,18 @@ module.exports.ban = function(req,res) {
 }
 module.exports.login = function(req,res) {
     let token = req.query.code
+    if(req.query.error) {
+        return res.render('./login/fail')
+    }
     let url = `https://${req.hostname}/login/signin`
     if(token) {return setuser()}else{
      if(req.cookies.user) {
          let warp = "login/signin"
+         let code = getToken.getoauthToken(req.cookies.user.token,req.cookies.user.id)
+         oauth.getUser(code).then((data) => {
+        if(!data) {
+          res.status(302).render("./login/nologin")  
+        }
          if(req.cookies.language) {
              if(req.cookies.language.lang === "zh-TW") {return res.status(302).render("./zh-TW/"+warp)}
              else if(req.cookies.language.lang === "en-US") {return res.status(302).render("./en-US/"+warp)}
@@ -32,7 +40,10 @@ module.exports.login = function(req,res) {
          }else{
          return res.status(302).render("./zh-TW/"+warp)
          }
-        }
+        }).catch((error) => {
+            res.status(302).render("./login/nologin") 
+        })
+        }else{ return res.status(500).render("login/fail")}
      }
      function setuser() {
         fetch.default('https://discord.com/api/v7/oauth2/token', 

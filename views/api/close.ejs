@@ -2,9 +2,15 @@
    <head>
       <link rel="stylesheet" href="/css/main.css">
       <style type="/css/main.css"></style>
+      <meta name="robots" content="noindex">
+      <meta name="googlebot" content="noindex">
    </head>
    <script>
     (async() => {
+      setTimeout(() => {
+        let text = document.getElementById("text").innerHTML
+        document.getElementById("text").innerHTML = text
+      }, 100);
        setTimeout(() => {
           window.close(); 
        }, 5000);
@@ -18,7 +24,10 @@
       2. 驗證發生錯誤<br>
       3. 非法文字輸入<br>
       4. 按太快<br><br>
-      實際錯誤: <%= Error %>
+      實際錯誤:
+      <div style="white-space: pre-line;">
+      <text id="text"> <%= Error %></text>
+      </div>
       <br>
       <br>
        <input onclick="window.close();" value="關閉視窗" type="button">

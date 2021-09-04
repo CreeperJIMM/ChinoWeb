@@ -66,7 +66,7 @@ app.route('/')
     if(req.hostname === "dckabicord.com" || req.hostname === "www.dckabicord.com" || req.hostname === "www.chinohelper.tk" || req.hostname === "chinohelper.tk") {
     //res.sendFile('/Users/ASUS/Desktop/DiscordBot/web/verify.html');res.status(403)
     setTimeout(() => {
-        res.status(302).redirect("/main")
+        return res.status(302).redirect("/main")
     }, 500);
 }else{
     return res.status(404)
@@ -98,27 +98,46 @@ app.route('/login')
 });
 */
 app.get('/nohttponly' ,function (req,res) {
-    res.status(302).render('./cmd/httponly');
+    return res.status(302).render('./cmd/httponly');
 })
 app.get('/banned' ,function (req,res) {
-    mainWeb.ban(req,res)
+    return mainWeb.ban(req,res)
+})
+
+app.get('/robots' ,function (req,res) {
+    return res.sendFile(__dirname+"/public/robots.text")
 })
 
 app.get('/login' ,function (req,res) {
-    res.render('./login/main');
+    return res.render('./login/main');
+})
+
+app.get('/terms' ,function (req,res) {
+    return res.render('./terms');
+})
+
+app.get('/privacy',function (req,res) {
+    return res.render("./privacy")
 })
 
 app.get('/login/link' ,function (req,res) {
-    res.render('./login/link');
+    return res.render('./login/link');
 })
 
 app.get('/login/link/google' ,function (req,res) {
-    res.render('./login/google');
+    return res.render('./login/google');
 })
 
 app.get('/login/signin',ipBlock,function (req,res) {
     if(cooldown(req.ip,req,res,client)) return;
-    mainWeb.login(req,res)
+    return mainWeb.login(req,res)
+})
+app.get('/musicbot',ipBlock,function (req,res) {
+    if(req.protocol === "BOT") {
+        res.sendStatus(101)
+    }else{
+        res.sendStatus(101)
+    }
 })
 
 let tokens = require("./token.json")
@@ -145,7 +164,7 @@ app.route('/api/link/google')
               let oath = Mongo.loadOuath(clientDB,data.id,"discord")
               oath.then((dataOath) => {
                   if(dataOath === false) {
-                    var myobj = [{ "type": "user", "discord_id": data.id,"discord_data":data,"google_id":userid,"google_data":payload,code:req.cookies.user.token,email: payload.email,"updatetime": new Date().getTime() }];
+                    var myobj = [{ "type": "user",status:{"google": true,"pin":null},"discord_id": data.id,"discord_data":data,"google_id":userid,"google_data":payload,code:req.cookies.user.token,email: payload.email,"updatetime": new Date().getTime() }];
                     let dbo = clientDB.db("mydb")
                     dbo.collection("oauth").insertMany(myobj, function (err, res2) {
                         if (err) return res.status(404).json({success:false,Error: 'Error_to_create_database.'})
@@ -153,9 +172,16 @@ app.route('/api/link/google')
                         res.json({success:true,name: payload.name,text:"create"})
                     });
                   }else{
-                    let datas = { "type": "user", "discord_id": data.id,"discord_data":data,"google_id":userid,"google_data":payload,code:req.cookies.user.token,email: payload.email,"updatetime": new Date().getTime() }
-                    Mongo.writeOauth(clientDB,data.id,"discord",datas)
-                    res.json({success:true,name: payload.name,text:"update"})
+                    dataOath.discord_id= data.id
+                    dataOath.discord_data=data
+                    dataOath.google_id=userid
+                    dataOath.google_data=payload
+                    dataOath.code = req.cookies.user.token
+                    dataOath.email= data.email
+                    dataOath.updatetime= new Date().getTime()
+                    dataOath.status= {"google":true,"pin":dataOath.status.pin}
+                    Mongo.writeOauth(clientDB,data.id,"discord",dataOath)
+                    return res.json({success:true,name: payload.name,text:"update"})
                   }
               })
               // If request specified a G Suite domain:
@@ -165,6 +191,92 @@ app.route('/api/link/google')
         }).catch((err) => {
             return res.status('404').json({success:false,Error: 'Error_to_get_data',Errors: err})
         })
+});
+
+app.route('/api/link/pin')
+    .post(function (req,res) {
+        if(!req.cookies.user) {
+            return res.render("./login/pin/register",{success:false,Error: 'No_Type_User_Token.'})
+        }
+        if(!req.cookies.user.token) {
+            return res.render("./login/pin/register",{success:false,Error: 'No_Type_User_Token.'})
+        }
+        if(!req.body.pin) {
+            return res.render("./login/pin/register",{success:false,Error: 'No_Type_PIN.'})
+        }
+        if(req.body.pin.length < 5) {
+            return res.render("./login/pin/register",{success:false,Error: 'More_than_PIN.'})
+        }
+        if(req.body.pin != req.body.pin_confirm) {
+            return res.render("./login/pin/register",{success:false,Error: 'Confirm_pin_not_correct.'})
+        }
+        let code = getToken.getoauthToken(req.cookies.user.token,req.cookies.user.id)
+        oauth.getUser(code).then((data) => {
+            async function verify() {
+            if(data.email != req.body.email) {
+                return res.render("./login/pin/register",{success:false,Error: 'No_Type_Email.'})
+            }
+              let oath = Mongo.loadOuath(clientDB,data.id,"discord")
+              oath.then((dataOath) => {
+                  if(dataOath === false) {
+                    var myobj = [{ "type": "user","status":{"google": null,"pin":true},"pin_password":req.body.pin, "discord_id": data.id,"discord_data":data,"updatetime": new Date().getTime() }];
+                    let dbo = clientDB.db("mydb")
+                    dbo.collection("oauth").insertMany(myobj, function (err, res2) {
+                        if (err) return res.status(404).json({success:false,Error: 'Error_to_create_database.'})
+                        console.log("新PIN用戶!!" + data.username)
+                        res.render("./login/pin/register",{Error:false,success:true,text:"create"})
+                    });
+                  }else{
+                    dataOath.discord_id= data.id
+                    dataOath.discord_data=data
+                    dataOath.code = req.cookies.user.token
+                    dataOath.pin_password = req.body.pin
+                    dataOath.email= data.email
+                    dataOath.updatetime= new Date().getTime()
+                    dataOath.status= {"google":dataOath.status.google,"pin":true}
+                    Mongo.writeOauth(clientDB,data.id,"discord",dataOath)
+                    return res.render("./login/pin/register",{Error:false,success:true,text:"update"})
+                  }
+              })
+              // If request specified a G Suite domain:
+              // const domain = payload['hd'];
+            }
+            verify().catch(console.error);
+        }).catch((err) => {
+            return res.status('404').render("./login/pin/register",{success:false,Error: 'Error_to_get_data',Errors: err})
+        })
+});
+
+app.route('/api/login/pin')
+    .post(function (req,res) {
+        if(!req.body.pin) {
+            return res.render("./login/pin/login",{success:false,Error: 'No_Type_PIN.'})
+        }
+        if(req.body.pin.length < 5) {
+            return res.render("./login/pin/login",{success:false,Error: 'More_than_PIN.'})
+        }
+        if(!req.body.email) {
+            return res.render("./login/pin/login",{success:false,Error: 'No_Type_Email.'})
+        }
+            async function verify() {
+              let oath = Mongo.loadOuath(clientDB,req.body.email,"email")
+              oath.then((dataOath) => {
+                  if(dataOath === false) {
+                    return res.render("./login/pin/login",{success:false,Error: 'This_account_no_have_link.'})
+                  }else{
+                    if(req.body.pin != dataOath.pin_password) {
+                        return res.render("./login/pin/login",{success:false,Error: 'Type_password_error.'})
+                    }
+                    let dt = dataOath.discord_data                      
+                    res.cookie('language',{lang: dt.locale},{path: '/',signed: false,httpOnly: false})
+                    res.cookie('user',{token: dataOath.code,id: dt.id,name: dt.username,mfa: dt.mfa_enabled},{path: '/',signed: false, expires: new Date(Date.now() + 868000000) ,httpOnly: true})
+                    return res.render("./login/pin/login",{Error:false,success:true,text:"login"})
+                  }
+              })
+              // If request specified a G Suite domain:
+              // const domain = payload['hd'];
+            }
+            verify().catch(console.error);
 });
 
 app.route('/api/login/google')
@@ -185,7 +297,7 @@ app.route('/api/login/google')
                     let dt = dataOath.discord_data                      
                     res.cookie('language',{lang: dt.locale},{path: '/',signed: false,httpOnly: false})
                     res.cookie('user',{token: dataOath.code,id: dt.id,name: dt.username,mfa: dt.mfa_enabled},{path: '/',signed: false, expires: new Date(Date.now() + 868000000) ,httpOnly: true})
-                    res.json({success:true,href:"/login/signin"})
+                    return res.json({success:true,href:"/login/signin"})
                   }
               })
               // If request specified a G Suite domain:
@@ -208,7 +320,7 @@ app.get('/main',ipBlock, function (req, res) {
             else if(req.cookies.language.lang === "ja-JP") {res.status(200).render("./ja-JP/index")}
             else{res.status(200).render("./zh-TW/index")}
         }else{
-        res.status(200).render("./zh-TW/index")
+            return res.status(200).render("./zh-TW/index")
         }
     }, 300);
 });
@@ -235,7 +347,7 @@ app.get('/about/chino', function (req, res) {
             else if(req.cookies.language.lang === "ja-JP") {res.status(200).render("./ja-JP/"+warp)}
             else{res.status(200).render("./zh-TW/"+warp)}
         }else{
-        res.status(200).render("./zh-TW/"+warp)
+            return res.status(200).render("./zh-TW/"+warp)
         }
     }, 600);
 })
@@ -252,7 +364,7 @@ app.get('/about/me', function (req, res) {
         else if(req.cookies.language.lang === "ja-JP") {res.status(200).render("./ja-JP/"+warp)}
         else{res.status(200).render("./zh-TW/"+warp)}
     }else{
-    res.status(200).render("./zh-TW/"+warp)
+        return res.status(200).render("./zh-TW/"+warp)
     }
 })
 app.get('/info', function (req, res) {
@@ -264,7 +376,7 @@ app.get('/info', function (req, res) {
         else if(req.cookies.language.lang === "ja-JP") {res.status(200).render("./ja-JP/"+warp)}
         else{res.status(200).render("./zh-TW/"+warp)}
     }else{
-    res.status(200).render("./zh-TW/"+warp)
+        return res.status(200).render("./zh-TW/"+warp)
     }
 })
 app.get('/help', function (req, res) {
@@ -276,7 +388,7 @@ app.get('/help', function (req, res) {
         else if(req.cookies.language.lang === "ja-JP") {res.status(200).render("./ja-JP/"+warp)}
         else{res.status(200).render("./zh-TW/"+warp)}
     }else{
-    res.status(200).render("./zh-TW/"+warp)
+        return res.status(200).render("./zh-TW/"+warp)
     }
 })
 
@@ -284,25 +396,25 @@ let shorturls = require('./shorturl.json')
 
 app.get('/chino', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.render('./chino');
+    return res.render('./chino');
 })
 app.get('/shorturl/:id', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
     let id = req.params.id
-    res.render('./shorturl');
+    return res.render('./shorturl');
 })
 app.get('/shorturl', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.redirect("/main")
+    return res.redirect("/main")
 })
 app.get('/s/:id', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
     let id = req.params.id
-    res.render('./shorturl');
+    return res.render('./shorturl');
 })
 app.get('/s', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.redirect("/main")
+    return res.redirect("/main")
 })
 app.route('/api/shorturl')
     .post(function (req,res) {
@@ -323,17 +435,17 @@ app.route('/api/shorturl')
 });
 app.get('/nofondguild', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.render('./login/noguild');
+    return res.render('./login/noguild');
 })
 app.get('/404', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.status(404).render('./login/error', {'title': '錯誤!',});
+    return res.status(404).render('./login/error', {'title': '錯誤!',});
  })
 
 app.get('/music/chino',function(req,res) {
     if(cooldown(req.ip,req,res,client)) return;
     res.status(403)
-    setTimeout(() => {res.sendFile(__dirname +'/public/sound/chinobgm.mp3')}, 1000);
+    setTimeout(() => {return res.sendFile(__dirname +'/public/sound/chinobgm.mp3')}, 1000);
 })
 /*
 app.get('/contact', function (req, res) {
@@ -372,21 +484,21 @@ app.get('/cmd', function (req, res) {
     break;
   }
 }else{
-  res.redirect('/login/discord')
+    return res.redirect('/login/discord')
 }
 })
 // ============================================================================
 app.get('/about', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.redirect('/about/me')
+    return res.redirect('/about/me')
 })
 app.get('/login/error', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.status(500).render('./login/error', {'title': '錯誤!',});
+    return res.status(500).render('./login/error', {'title': '錯誤!',});
  })
 app.get('/login/fail', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.status(500).render('./login/fail', {'title': '錯誤!',});
+    return res.status(500).render('./login/fail', {'title': '錯誤!',});
  })
 app.get('/login/logout', async function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
@@ -395,30 +507,36 @@ app.get('/login/logout', async function (req, res) {
     res.clearCookie('language')
     res.clearCookie('user_data')
     res.status(302).render('./login/logout');
+    return;
  })
  app.get('/cmd/logout', async function (req, res) {
   if(cooldown(req.ip,req,res,client)) return;
   res.clearCookie('user_token')
   res.clearCookie('language')
   res.status(302).render('./cmd/logout');
+  return;
 })
 // ==================================================================== 
 const Discord = require("discord.js");
-const client = new Discord.Client()
+const { Client, Intents } = require("discord.js");
+const client = new Client({intents: [Intents.FLAGS.GUILDS,"GUILDS","GUILD_MESSAGES"]})
+
 const { prefix, token } = require('../DiscordBot/config.json');
-client.on('ready',() => {
-  console.log("login in! \nin "+client.user.username)
+client.once('ready',() => {
+    return console.log("login in! \nin "+client.user.username)
 })
-const client2 = new Discord.Client()
+
+const client2 = new Client({intents: [Intents.FLAGS.GUILDS,"GUILDS"]})
 let token2 = require('../DiscordBot/config2.json').token
 
-client2.on('ready',() => {
-  console.log("login in! \nin "+client2.user.username)
+client2.once('ready',() => {
+    return console.log("login in! \nin "+client2.user.username)
 })
+
+let top = require("./function/top.gg")
+top.main(client,app)
 // ==================================================================== 
 const MongoClient = require('mongodb').MongoClient;
-const e = require('express');
-const { WSAEWOULDBLOCK, UV_FS_O_FILEMAP } = require('constants');
 const uri = require("../DiscordBot/token.json");
 const clientDB = new MongoClient(uri.mongo, { useNewUrlParser: true, useUnifiedTopology: true });
 clientDB.connect(err => {
@@ -432,13 +550,14 @@ function writeGuild(client,id,data) {/*寫入公會檔案*/let dbo =client.db("m
 
 app.get('/api',function (req,res) {
     if(cooldown(req.ip,req,res,client)) return;
-    res.status(404).render('error')
+    return res.status(404).render('error')
 })
 
 //當 WebSocket 從外部連結時執行
 let websocket = require("./function/websocket")
 websocket(app)
 
+let verifiapi = new Map()
 let {banlist , why} = require('../DiscordBot/banlist.json')
 app.route('/api/verification')
     .post(function (req,res) {
@@ -448,17 +567,48 @@ app.route('/api/verification')
         if(!req.cookies.user.token) {
             return res.json({Error: 'No_Type_User_Token.'})
         }
-        let code = getToken.getoauthToken(req.cookies.user.token,req.cookies.user.id)
-        oauth.getUser(code).then((data) => {
-            if(banlist.indexOf(data.id) != -1) return res.json({Error: 'User_is_banned.',Why: why[data.id] })
-            res.jsonp(data)
-        }).catch((err) => {
-            return res.status('404').json({Error: 'Error_to_get_data',Errors: err})
-        })
+        if(verifiapi.has(req.ip)) {
+            const user = verifiapi.get(req.ip)
+            if(user.time >= 20) {
+                user.ddos = true
+                return res.status(429).json({Error:"Too many request!!!!",code: 429})
+            }
+            if(user.time >= 8) return res.status(429).json({Error:"Too many request!",code: 429})
+            user.time++
+            verifi_main()
+            deletimes()
+        }else{
+            let a = {time: 0,data: undefined,guidata: undefined,ddos: false}
+            verifiapi.set(req.ip,a)
+            verifi_main()
+        }
+        function deletimes() {
+            let s = 5
+            setTimeout(() => {
+                const user = verifiapi.get(req.ip)
+                if(user.ddos) s = 10
+                user.data = undefined
+                user.time = user.time -1
+            }, s*1000);
+        }
+        function verifi_main() {
+            const user = verifiapi.get(req.ip)
+            if(user.data) return res.jsonp(user.data)
+            let code = getToken.getoauthToken(req.cookies.user.token,req.cookies.user.id)
+            oauth.getUser(code).then((data) => {
+                if(banlist.indexOf(data.id) != -1) return res.json({Error: 'User_is_banned.',Why: why[data.id] })
+                res.jsonp(data)
+                user.data = data
+                return;
+            }).catch((err) => {
+                return res.status('404').json({Error: 'Error_to_get_data',Errors: err})
+            })
+        }
 });
 let NsfwAD=new Set()
 app.route('/api/adwrite')
     .post(function (req,res) {
+        if(cooldown(req.ip,req,res,client)) return;
         if(!req.cookies.user) {
             return res.json({Error: 'No_Type_User_Token.'})
         }
@@ -476,12 +626,14 @@ app.route('/api/adwrite')
             NsfwAD.add(data.id)
             res.json({ok: true})
             deleteAD(data.id)
+            return;
         }).catch((err) => {
             return res.status('404').json({Error: 'Error_to_get_data',Errors: err})
         })
 });
 app.route('/api/adget')
     .post(function (req,res) {
+        if(cooldown(req.ip,req,res,client)) return;
         if(!req.cookies.user) {
             return res.json({ok: false,Error: 'No_Type_User_Token.'})
         }
@@ -502,7 +654,7 @@ app.route('/api/adget')
 function deleteAD(id) {
     setTimeout(() => {
         if(NsfwAD.has(id)) {
-            NsfwAD.delete(id)
+            return NsfwAD.delete(id)
         }
     }, 10000);
 }
@@ -511,7 +663,35 @@ app.route('/api/guild')
         if(!req.cookies.user) {
             return res.status(404).json({Error: 'No_Type_User_Token.'})
         }
+        if(cooldown(req.ip,req,res,client)) return;
         let code = getToken.getoauthToken(req.cookies.user.token,req.cookies.user.id)
+        if(verifiapi.has(req.ip)) {
+            const user = verifiapi.get(req.ip)
+            if(user.time >= 20) {
+                user.ddos = true
+                return res.status(429).json({Error:"Too many request!!!!",code: 429})
+            }
+            if(user.time >= 8) return res.status(429).json({Error:"Too many request!",code: 429})
+            user.time++
+            verifi_main()
+            deletimes()
+        }else{
+            let a = {time: 0,data: undefined,guidata: undefined,ddos: false}
+            verifiapi.set(req.ip,a)
+            verifi_main()
+        }
+        function deletimes() {
+            let s = 5
+            setTimeout(() => {
+                const user = verifiapi.get(req.ip)
+                if(user.ddos) s = 10
+                user.guidata = undefined
+                user.time = user.time -1
+            }, s*1000);
+        }
+        function verifi_main() {
+            const user = verifiapi.get(req.ip)
+            if(user.guidata) return res.jsonp(user.guidata)
         oauth.getUserGuilds(code).then((data) => {
             let gui = new Array()
             for (let i = 0; i < data.length; i++) {
@@ -523,10 +703,13 @@ app.route('/api/guild')
         }
         function sendguild() {
         res.jsonp(gui)
+        user.guidata = gui
+        return;
         }
         }).catch((err) => {
             return res.status('404').json({Error: 'Error_to_get_data',Errors: err})
         })
+    }
 });
 app.get('/music', function (req, res) {
     if(cooldown(req.ip,req,res,client)) return;
@@ -537,7 +720,7 @@ app.get('/music', function (req, res) {
         else if(req.cookies.language.lang === "ja-JP") {res.status(302).render("./ja-JP/"+warp)}
         else{res.status(302).render("./zh-TW/"+warp)}
     }else{
-    res.status(302).render("./zh-TW/"+warp)
+        return res.status(302).render("./zh-TW/"+warp)
     }
 })
 app.get('/login/picture/love', function (req, res) {
@@ -549,7 +732,7 @@ app.get('/login/picture/love', function (req, res) {
         else if(req.cookies.language.lang === "ja-JP") {res.status(302).render("./ja-JP/"+warp)}
         else{res.status(302).render("./zh-TW/"+warp)}
     }else{
-    res.status(302).render("./zh-TW/"+warp)
+        return res.status(302).render("./zh-TW/"+warp)
     }
 })
 app.post('/music/search', function (req, res) {
@@ -567,7 +750,7 @@ app.get('/music/:id', function (req, res) {
         else if(req.cookies.language.lang === "ja-JP") {res.status(302).render("./ja-JP/"+warp)}
         else{res.status(302).render("./zh-TW/"+warp)}
     }else{
-    res.status(302).render("./zh-TW/"+warp)
+        return res.status(302).render("./zh-TW/"+warp)
     }
 })
 
@@ -581,7 +764,7 @@ app.route('/dashboard')
         else if(req.cookies.language.lang === "ja-JP") {res.status(302).render("./ja-JP/"+warp)}
         else{res.status(302).render("./zh-TW/"+warp)}
     }else{
-    res.status(302).render("./zh-TW/"+warp)
+        return res.status(302).render("./zh-TW/"+warp)
     }
 });
 app.route('/dashboard/:id')
@@ -594,7 +777,7 @@ app.route('/dashboard/:id')
         else if(req.cookies.language.lang === "ja-JP") {res.status(302).render("./ja-JP/"+warp,{'id': req.params.id})}
         else{res.status(302).render("./zh-TW/"+warp),{'id': req.params.id}}
     }else{
-    res.status(302).render("./zh-TW/"+warp,{'id': req.params.id})
+        return res.status(302).render("./zh-TW/"+warp,{'id': req.params.id})
     }
 });
 let Mongo = require("./function/MongoData")
@@ -644,6 +827,8 @@ app.route('/api/daily')
           return res.status('404').json({Error: 'Error_to_get_data2',Errors: err})
       })
     })
+}).catch((error) => {
+    return res.status('404').json({Error: 'Error_to_get_data.',Errors: error})
 })
 });    
 let imgaccess = new Set();
@@ -966,6 +1151,7 @@ app.route('/api/user')
    })
    */
    .post(function (req,res) {
+    if(cooldown(req.ip,req,res,client)) return;
        if(!req.body.uid) {
            return res.status(404).json({Error: 'No_Type_User_ID'})
        }
@@ -1024,7 +1210,7 @@ app.route('/api/user')
                 return res.json({obj})
             });
         }else{
-        res.jsonp(user)    
+            return res.jsonp(user)    
         }
        })
 })
@@ -1067,9 +1253,11 @@ app.post('/api/guild/setting/:id',function (req,res) {
             if(post.slash === "false") {set.slash = false}else if(post.slash === "true") {set.slash = true}
             user.language = {lan: lan2,run: nor2,setting: set}
             writeGuild(clientDB,guild.id,user)
-            let send = `語言: ${post.language}<br>觸發: ${post.detect}<br>[snipe]: ${post.snipe}\n[safe]: ${post.safe}<br>[react]: ${post.react}<br>[slash]: ${post.slash}`
+            let send = `語言: ${post.language}\n觸發: ${post.detect}\n[snipe]: ${post.snipe}\n[safe]: ${post.safe}\n[react]: ${post.react}\n[slash]: ${post.slash}`
           return res.render('./api/join',{"text": send})
-        }})})
+        }})}).catch((error) => {
+            return res.status('404').json({Error: 'Error_to_get_data.',Errors: error})
+        })
 })
 app.post('/api/guild/join/test/:id',function (req,res) {
     if(cooldown(req.ip,req,res,client)) return;
@@ -1094,10 +1282,12 @@ app.post('/api/guild/join/test/:id',function (req,res) {
           let channel= guild.channels.cache.get(user.join)
           if(!channel) return res.status(403).render("./api/close",{Error: "未填頻道."})
           let text = user.join2.join(" ")
-          var send = "你現在可以查看該頻道是否有訊息! [預覽]:"+text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + "")
+          var send = "你現在可以查看該頻道是否有訊息! \n[預覽]:"+text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + "")
           channel.send("[網頁版測試] "+text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + ""))
           return res.render('./api/join',{"text": send})
-        }})})
+        }})}).catch((error) => {
+            return res.status('404').json({Error: 'Error_to_get_data.',Errors: error})
+        })
 })
 app.post('/api/guild/leave/test/:id',function (req,res) {
     if(cooldown(req.ip,req,res,client)) return;
@@ -1112,8 +1302,7 @@ app.post('/api/guild/leave/test/:id',function (req,res) {
     if(!guild) return res.status(403).render("./api/close",{Error: "未知伺服器."})
     let userid= req.body.userid
     if(!userid) return res.status(403).render("./api/close",{Error: "未知用戶."})
-    oauth.getUser(token).then((w) => 
-    {
+    oauth.getUser(token).then((w) => {
     if(userid != w.id) return res.status(403).render("./api/close",{Error: "憑證不符."}) 
     loadGuild(clientDB,guild.id).then((user) => {
         if (user == false) {
@@ -1122,10 +1311,12 @@ app.post('/api/guild/leave/test/:id',function (req,res) {
           let channel= guild.channels.cache.get(user.leave)
           if(!channel) return res.status(403).render("./api/close",{Error: "未填頻道."})
           let text = user.leave2.join(" ")
-          var send = "你現在可以查看該頻道是否有訊息! [預覽]:"+text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + "")
+          var send = "你現在可以查看該頻道是否有訊息!\n [預覽]:"+text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + "")
           channel.send("[網頁版測試] "+text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + ""))
           return res.render('./api/join',{"text": send})
-        }})})
+        }})}).catch((error) => {
+            return res.status('404').json({Error: 'Error_to_get_data.',Errors: error})
+        })
 })
 app.route('/api/guild/join/setup/:id')
    .post(function (req,res) {
@@ -1170,7 +1361,10 @@ app.route('/api/guild/join/setup/:id')
           writeGuild(clientDB,guild.id,user)
           var send = text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + "")
           return res.render('./api/join',{"text": send})
-          }}) })
+          }}) 
+        }).catch((error) => {
+            return res.status('404').json({Error: 'Error_to_get_data.',Errors: error})
+        })
 })
 app.route('/api/guild/leave/setup/:id')
    .post(function (req,res) {
@@ -1215,7 +1409,10 @@ app.route('/api/guild/leave/setup/:id')
           writeGuild(clientDB,guild.id,user)
           var send = text.replace(`{member}` , + guild.memberCount + "").replace(`{user}` , " " + " [用戶] " + "").replace(`{server}` , " " + guild.name + "")
           return res.render('./api/join',{"text": send})
-          }})}) 
+          }})
+        }).catch((error) => {
+            return res.status('404').json({Error: 'Error_to_get_data.',Errors: error})
+        })
 })
 /*/
 {
@@ -1240,12 +1437,13 @@ app.route('/api/language/set')
         res.cookie('language',{lang: "ja-JP"},{path: '/',signed: false,httpOnly: false})
         res.json({ok: true,message:"日本語に設定"})
     }else{
-        res.json({ok: false,message:"No_correct_language."})
+        return res.json({ok: false,message:"No_correct_language."})
     }
 })
 
 app.route('/api/guild/json')
    .post(async function (req,res) {
+    if(cooldown(req.ip,req,res,client)) return;
        let id = req.body.uid,goup = new Array()
        id= JSON.parse(id)
        id= id.id
@@ -1263,10 +1461,10 @@ app.route('/api/guild/json')
             }
             goup.push({"Error": false,"Data": user,"id": guild})
            })
-           if(i === id.length-1) sendguildJson()
+           if(i === id.length-1) return sendguildJson()
        }
        function sendguildJson() {
-        res.jsonp(goup)
+        return res.jsonp(goup)
        }
 })
 
@@ -1290,14 +1488,16 @@ app.route('/api/guild/channel')
         client3=client2
     }
        if(!guild) return res.status(404).json({Error: 'No_Fond_Sever'})
-       let channel= guild.channels.cache.array()
-       for (let i = 0; i < channel.length; i++) {
-           const ch = channel[i];
-           if(!ch.permissionsFor(client3.user).has("SEND_MESSAGES")) channel.remove(ch[i])
-           if(i === channel.length-1) sendchannel()
-       }
+       let channel= guild.channels.cache
+       let channel2 = []
+       channel.forEach((ch) => {
+           if(ch.permissionsFor(client3.user).has("SEND_MESSAGES") && ch.permissionsFor(client3.user).has("VIEW_CHANNEL")) {
+               channel2.push(ch)
+            }
+        })
+        return sendchannel()
        function sendchannel() {
-        res.jsonp(channel)
+        return res.jsonp(channel2)
        }
 })
 Array.prototype.remove = function (val) {
@@ -1313,17 +1513,19 @@ app.route("/*")
     if(cooldown(req.ip,req,res,client)) return;
     res.status(404);
     res.redirect("/404")
+    return;
 })
 .post(ipBlock,function(req,res) {
     if(cooldown(req.ip,req,res,client)) return;
     res.status(404);
     res.redirect("/404")
+    return;
 })
 
 var httpsServer = https.createServer(credentials, app)
 httpsServer.listen(443);
 
-client.on('ready',() => {
+client.once('ready',() => {
     let day= new Date()
     console.log(`[${day.toDateString()}]`+'Start on port ' + port+"\nIP:" +IP)
     setInterval(() => {
@@ -1357,12 +1559,11 @@ fetch.default('https://api.my-ip.io/ip.json',
 }).then((data2) => {
     ipv = data2.type
     IP = data2.ip
-    update(IP)
+    return update(IP)
     //update2()
 })
 
 let update = require("./function/updateDNS");
-const { platform } = require('os');
 
 clientDB.on('close', function() {
     clientDB.close(err => {

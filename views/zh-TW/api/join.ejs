@@ -7,13 +7,19 @@
    </head>
    <script>
     (async() => {
+   setTimeout(() => {
+        let text = document.getElementById("text").innerHTML
+        document.getElementById("text").innerHTML = text
+   }, 100);
     setTimeout(() => {
        window.close(); }, 5900); 
     })()
     </script>
    <body>
        <h1>成功設置!</h1>
-       <h3><%= text %></h3>
+       <div style="white-space: pre-line;">
+      <text id="text"><%= text %></text>
+       </div>
        如果網頁沒有關閉請點這裡
        <input onclick="window.close();" value="關閉視窗" type="button">
         <br>

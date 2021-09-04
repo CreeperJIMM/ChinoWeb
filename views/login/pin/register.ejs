@@ -1,0 +1,59 @@
+<html>
+   <head>
+      <link rel="stylesheet" href="/css/main.css">
+      <style type="/css/main.css"></style>
+      <meta name="robots" content="noindex">
+      <meta name="googlebot" content="noindex">
+   </head>
+   <script>
+   setTimeout(() => {
+    let text2 = document.getElementById("error").innerHTML
+    let text = document.getElementById("text").innerHTML
+    if(text2 && text2 != "false") {
+    switch (text2) {
+        case "No_Type_User_Token.":
+        document.getElementById("text").innerHTML = `<h2>註冊發生問題!</h2>請登入再註冊PIN碼!`
+            break;
+        case "No_Type_PIN.":
+        document.getElementById("text").innerHTML = `<h2>註冊發生問題!</h2>請輸入PIN碼!`
+            break;
+        case "More_than_PIN.":
+        document.getElementById("text").innerHTML = `<h2>註冊發生問題!</h2>你的PIN碼請大於5位數!`
+            break;
+        case "Confirm_pin_not_correct.":
+        document.getElementById("text").innerHTML = `<h2>註冊發生問題!</h2>你的PIN碼和確認PIN碼不一致!`
+            break;
+        case "No_Type_Email.":
+        document.getElementById("text").innerHTML = `<h2>註冊發生問題!</h2>請輸入Email<br>或檢查Email是否與discord的一致!`
+            break;
+    }
+    setTimeout(() => {
+          window.close(); 
+       }, 4000);
+}else{
+    document.getElementById("text").innerHTML = `<h2>✅設置成功!</h2>你已經成功更新你的PIN碼登入!`
+    document.getElementById("error").innerHTML = ``
+    setTimeout(() => {
+          window.close(); 
+       }, 2000);
+}
+   }, 100);
+    </script>
+   <body>
+       <div id="text">
+      <h2>註冊出現問題!</h2>
+      因為內容存在問題所以此資料請求無效!<br>
+      請檢查以下是否有問題:<br><br>
+      1. 密碼少於5位數<br>
+      2. 未登入discord註冊<br>
+      3. 未填入email<br>
+      實際錯誤: 
+       </div>
+      <div id="error"><%= Error %></div>
+      <br>
+       <input onclick="window.close();" value="關閉視窗" type="button">
+        <br>
+      <a href="/main">點我回到首頁</a>
+      <br>
+   </body>
+</html>

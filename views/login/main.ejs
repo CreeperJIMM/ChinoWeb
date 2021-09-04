@@ -24,31 +24,75 @@
       var id_token = googleUser.getAuthResponse().id_token;
     var profile = googleUser.getBasicProfile();
     console.log(profile.Me)
-    if(profile) document.getElementById('g-logout').innerHTML = `哈囉! ${profile.Me}<br><a href="#" onclick="signOut();">Google登出</a>`
+    if(profile) {
+       if(document.getElementById('g-logout')) document.getElementById('g-logout').innerHTML = `哈囉! ${profile.Me}<br><a href="#" onclick="signOut();">Google登出</a>`
+      }
     setTimeout(async() => {
       if(word.Error) {
          let logins = await getGoogleData(id_token)
          if(logins.success) {
-            window.location = logins.href
+            signOut()
+            setTimeout(() => {
+            window.location = logins.href               
+            }, 100);
          }
       }
     }, 1000);
    }
    (async() => {
       word = await getData()
-      if(!word.Error) document.getElementById('d-logout').innerHTML = `哈囉! ${word.username}#${word.discriminator}<br><a href="/login/logout">Discord登出</a>`
+      if(!word.Error) {
+         document.getElementById('d-logout').innerHTML = `哈囉! ${word.username}#${word.discriminator}<br><a href="/login/logout">Discord登出</a>`
+         document.getElementById("pin_type").innerHTML = `<h4>PIN碼登入Discord</h4>你已登入Discord所以不需要另外登入!`
+         document.getElementById("google_login").innerHTML = `你已登入Discord所以不需要另外登入!`
+      }else{
+         document.getElementById("pin_type").innerHTML = `
+         <h4>PIN碼登入Discord</h4>
+   <form method="post"  action="/api/login/pin" target="foo" onsubmit="openPINweb()">  
+      <input type="email" name="email" alue="" required autocomplete="off" placeholder="請填入Discord所使用的Email" style="width:280px;"><br>
+      <input type="password" id="key_pin" name="pin" oninput="value=value.replace(/[^\\d]/g ,'');" maxlength="12" minlength="5" value="" required autocomplete="off" placeholder="請填入PIN碼(數字)" style="width:260px;">
+      <img src="https://i.imgur.com/7mMNDeA.png" width="20px" height="20px" id="eyes"><br>
+      <input type="submit" value="登入">
+  </form>`
+  run_eye()
+      }
     })()
+    function openPINweb() {
+      let w = (document.body.clientWidth)/2.5
+      let h = (document.body.clientHeight)/2.5
+      window.open('','foo','resizable=1,scrollbars=1,width=400,height=435,top='+h+', left='+w)
+    }
+    let eye = 0
+    function run_eye() {
+    $(document).ready(function(){
+    $("#eyes").click(function(){
+    var input = document.querySelector('#key_pin')
+    var imgs = document.getElementById('eyes');
+       if(eye === 0) {
+      eye = 1
+      eyes.src = 'https://i.imgur.com/6K4KWpj.png';
+      input.type = 'text';
+       }else if(eye === 1){
+         eye = 0
+         eyes.src = 'https://i.imgur.com/7mMNDeA.png';
+         input.type = 'password';
+       }
+    })})}
+    function discordlogin() {
+      let w = (document.body.clientWidth)/2.6
+      let h = (document.body.clientHeight)/3
+      window.open ("/login/discord", "newwindow","width=500,height=800,top="+h+", left="+w+" toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no")  
+    }
   </script>
    <meta name="google-signin-client_id" content="877162245319-vkdpkj2v6shsu8ue0rlvb5jrgicinhuo.apps.googleusercontent.com">
    <body>
         <br>
         <h2>登入方式</h2>
-        <button value="Discord登入" style="width:120px; height:36px" onclick="location.href='/login/discord'"><img src="/img/discord.svg" width="20px" height="20px"> Discord登入</button>
+        <button value="Discord登入" style="width:120px; height:36px" onclick="discordlogin()"><img src="/img/discord.svg" width="20px" height="20px"> Discord登入</button>
         <div id="d-logout"></div>
         <h4>第三方登入Discord</h4>
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
-        <div id="g-logout"></div>
-        <div id="g-loginto"></div>
+        <div id="google_login"> <div class="g-signin2" data-onsuccess="onSignIn"></div><div id="g-logout"></div><div id="g-loginto"></div></div>
+        <div id="pin_type"></div>
         <br>
         <a href="/login/link">🔗將第三方登入連結discord</a>    
         <br>

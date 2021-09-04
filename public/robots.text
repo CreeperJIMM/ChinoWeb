@@ -1,0 +1,10 @@
+User-agent: *
+Disallow:/img/*
+Disallow:/js/*
+Disallow:/css/*
+Disallow:/login/*
+Disallow:/cmd/*
+Disallow:/banned
+Disallow:/chino
+Disallow:/nofondguild
+Allow:/main

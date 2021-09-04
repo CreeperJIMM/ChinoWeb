@@ -62,7 +62,7 @@ module.exports.writeDaily = function (client, data) {
 
 module.exports.loadOuath = async (client, userid,type) => {
   /*讀取用戶檔案*/ let dbo = client.db("mydb"),typer = "discord_id"
-  if(type) {if(type === "google") typer = "google_id"}
+  if(type) {if(type === "google") {typer = "google_id"}else if(type === "email") {typer = "email"}}
     let id = userid,
     query = { [typer]: id };
   let user = await dbo.collection("oauth").find(query).toArray();
@@ -73,7 +73,7 @@ module.exports.loadOuath = async (client, userid,type) => {
 
 module.exports.writeOauth = function (client, id,type, data) {
   /*寫入用戶檔案*/ let dbo = client.db("mydb"),typer = "discord_id"
-    if(type) {if(type === "google") typer = "google_id"}
+    if(type) {if(type === "google") {typer = "google_id"}else if(type === "email") {typer = "email"}}
     query = { [typer]: id };
   let user = dbo.collection("oauth").find(query).toArray();
   var myquery = { [typer]: id };

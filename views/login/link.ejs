@@ -27,6 +27,39 @@
       let word = await getData()
       if(!word.Error) document.getElementById('d-logout').innerHTML = `將被連結的discord帳號:<br> ${word.username}#${word.discriminator}<br>`
     })()
+    function openPINweb() {
+      let w = (document.body.clientWidth)/2.5
+      let h = (document.body.clientHeight)/2.5
+      window.open('','foo','resizable=1,scrollbars=1,width=400,height=435,top='+h+', left='+w)
+    }
+    let eye = 0,eye2 = 0
+    $(document).ready(function(){
+    $("#eyes1").click(function(){
+    var input = document.querySelector('#key_pin')
+    var imgs = document.getElementById('eyes1');
+       if(eye === 0) {
+      eye = 1
+      imgs.src = 'https://i.imgur.com/6K4KWpj.png';
+      input.type = 'text';
+       }else if(eye === 1){
+         eye = 0
+         imgs.src = 'https://i.imgur.com/7mMNDeA.png';
+         input.type = 'password';
+       }
+    })
+    $("#eyes2").click(function(){
+    var input = document.querySelector('#key_pin2')
+    var imgs = document.getElementById('eyes2');
+       if(eye2 === 0) {
+      eye2 = 1
+      imgs.src = 'https://i.imgur.com/6K4KWpj.png';
+      input.type = 'text';
+       }else if(eye2 === 1){
+         eye2 = 0
+         imgs.src = 'https://i.imgur.com/7mMNDeA.png';
+         input.type = 'password';
+       }
+    })})
   </script>
    <meta name="google-signin-client_id" content="877162245319-vkdpkj2v6shsu8ue0rlvb5jrgicinhuo.apps.googleusercontent.com">
    <body>
@@ -35,9 +68,21 @@
         <button value="Discord登入" style="width:120px; height:36px" onclick="location.href='/login/discord'"><img src="/img/discord.svg" width="20px" height="20px" > Discord登入</button>
         <div id="d-logout"></div>
         <b>備註: 若登入discord需重新連結google</b>
-        <h4>第三方登入Discord</h4>
+        <h4>Google註冊</h4>
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
         <div id="g-logout"></div>
+        <h4>PIN碼註冊</h4>
+        <form method="post"  action="/api/link/pin" target="foo" onsubmit="openPINweb()"> 
+         確認email<br>
+         <input type="email" name="email" alue="" required autocomplete="off" placeholder="請填入Discord所使用的Email" style="width:280px;"><br>
+         註冊PIN碼(最少5位數,最多12位數)<br>
+         <input type="password" id="key_pin" name="pin" oninput="value=value.replace(/[^\d]/g,'')" maxlength="12" minlength="5" value="" required autocomplete="off" placeholder="請填入PIN碼(數字)" style="width:260px;">
+          <img src="/img/eye_close.png" width="20px" height="20px" id="eyes1"><br>
+         確認PIN碼(與上面一致)<br>
+        <input type="password" id="key_pin2" name="pin_confirm" oninput="value=value.replace(/[^\d]/g,'')" maxlength="12" minlength="5" value="" required autocomplete="off" placeholder="請填入PIN碼(數字)" style="width:260px;">
+         <img src="https://i.imgur.com/7mMNDeA.png" width="20px" height="20px" id="eyes2"><br>
+         <input type="submit" value="🔗連結">
+     </form>
         <br>
         登入後請點擊名字後面的連結按鈕🔗<br>
         若你授權一次discord就必須再連結一次
