@@ -37,6 +37,7 @@ function isDDos() {
   if (ddostimes >= 8) return process.exit(0);
 }
 let docs = require("../URL/docs");
+let newWeb = require("../URL/new");
 function root(req, res) {
   if(!req.hostname) {
     res.status(502)
@@ -59,6 +60,9 @@ function root(req, res) {
     return true;
   } else if(req.hostname.startsWith("api")) {
     res.status(502).json({Error:"This root does not exit."})
+    return true;
+  } else if(req.hostname.startsWith("new")) {
+    newWeb(req, res);
     return true;
   }else{
     return false;    

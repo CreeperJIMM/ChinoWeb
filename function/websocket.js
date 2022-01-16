@@ -15,6 +15,7 @@ module.exports = function (app) {
     let user = null,
     isMusic = false;
     let datas = null;
+    let TESTtime = 0;
       id = "";
     if (req.url === "/api/ws/music") {
       if (!req.headers["sec-websocket-protocol"]) {
@@ -74,7 +75,6 @@ module.exports = function (app) {
         return ws.close();
       }
     }
-    let TESTtime = 0;
     function playing(data) {
       let Timer = setInterval(() => {
         wss.clients.forEach((client) => {

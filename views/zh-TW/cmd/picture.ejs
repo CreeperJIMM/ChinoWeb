@@ -43,7 +43,7 @@
    }
    let url = new URL(document.documentURI);
    setTimeout((async) => {
-    document.getElementById('daily').innerHTML = '<img src="/api/picture?img='+url.searchParams.get("img")+'&nsfw='+url.searchParams.get("nsfw").toString()+'&file='+img.file+'" '+size+'>'
+    document.getElementById('daily').innerHTML = '<img src="/api/picture?img='+url.searchParams.get("img")+'&nsfw='+url.searchParams.get("nsfw")+'&file='+img.file+'" '+size+'>'
    }, 400);
    let imgname = url.searchParams.get("img"),imgname2 = null,nsfws = "",money = null;
    if(url.searchParams.get("nsfw") === "true") {
