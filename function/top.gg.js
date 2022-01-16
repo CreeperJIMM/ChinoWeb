@@ -3,7 +3,8 @@ const DBL = require("dblapi.js");
 let Discord = require("discord.js")
 let fetch = require("node-fetch")
 let test = new Map()
-let tokens = require("../token.json")
+const topToken = process.env["top_token"]
+
 module.exports.main = function(client,app) {
     app.post('/api/hasvote', async function (req, res) {
         let data = req.body
@@ -12,7 +13,7 @@ module.exports.main = function(client,app) {
             {method:"GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": tokens.topToken,
+                "Authorization": topToken,
             }}).then(async(data) => {
                 return data.json()
             }).then((users) => {

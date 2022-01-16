@@ -1,7 +1,7 @@
-let tokens = require("../token.json")
+let Google_ID = process.env["google_ID"]
 let getToken = require("../function/getToken")
 const {OAuth2Client} = require('google-auth-library');
-const clientG = new OAuth2Client(tokens.Google_ID);
+const clientG = new OAuth2Client(Google_ID);
 
 const DiscordOauth2 = require("discord-oauth2");
 const oauth = new DiscordOauth2();
@@ -19,7 +19,7 @@ module.exports.google_link = function(req,res,clientDB) {
         async function verify() {
           const ticket = await clientG.verifyIdToken({
               idToken: req.body.idtoken,
-              audience: tokens.Google_ID,
+              audience: Google_ID,
           });
           if(!ticket) return res.json({success:false,Error:"Error_to_get_google_data"})
           const payload = ticket.getPayload();
@@ -111,7 +111,7 @@ module.exports.google_login = function(req,res,clientDB) {
     async function verify() {
         const ticket = await clientG.verifyIdToken({
             idToken: req.body.idtoken,
-            audience: tokens.Google_ID,
+            audience: Google_ID,
         });
         if(!ticket) return res.status(422).json({success:false,Error:"Error_to_get_google_data"})
         const payload = ticket.getPayload();

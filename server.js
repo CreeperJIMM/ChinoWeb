@@ -361,17 +361,18 @@ app.get('/login/logout', async function (req, res) {
   return;
 })
 // ==================================================================== 
-const Discord = require("discord.js");
+require('dotenv').config();
 const { Client, Intents } = require("discord.js");
 const client = new Client({intents: [Intents.FLAGS.GUILDS,"GUILDS","GUILD_MESSAGES"]})
 
-const { prefix, token } = require('../DiscordBot/config.json');
+const token = process.env["discord_token_1"]
+const prefix = process.env["discord_prefix_1"]
 client.once('ready',() => {
     return console.log("login in! \nin "+client.user.username)
 })
 
 const client2 = new Client({intents: [Intents.FLAGS.GUILDS,"GUILDS"]})
-let token2 = require('../DiscordBot/config2.json').token
+let token2 =  process.env["discord_token_2"]
 
 client2.once('ready',() => {
     return console.log("login in! \nin "+client2.user.username)
@@ -381,8 +382,8 @@ let top = require("./function/top.gg")
 top.main(client,app)
 // ==================================================================== 
 const MongoClient = require('mongodb').MongoClient;
-const uri = require("../DiscordBot/token.json");
-const clientDB = new MongoClient(uri.mongo, { useNewUrlParser: true, useUnifiedTopology: true });
+const uri =  process.env["mongo_token"]
+const clientDB = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 clientDB.connect(err => {
   console.log("[MangoDB] 連接成功")
 });

@@ -2,7 +2,7 @@ const DiscordOauth2 = require("discord-oauth2");
 const oauth = new DiscordOauth2();
 let getToken = require("../function/getToken")
 var fetch = require('node-fetch')
-let tokencloud = require("../token.json");
+let discordToken = process.env["discord_token_web"]
 module.exports.main = function(app) {
 
 }
@@ -54,7 +54,7 @@ module.exports.login = function(req,res) {
          },
          body: new URLSearchParams({
              "client_id": "731408794948730961",
-             'client_secret':tokencloud.discordtoken,
+             'client_secret':discordToken,
              'grant_type': 'authorization_code',
              "code": token,
              "refresh_token": token,

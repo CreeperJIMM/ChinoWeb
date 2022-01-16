@@ -1,4 +1,4 @@
-let tokencloud = require("../token.json");
+let tokencloud = process.env["cloud_token"]
 var fetch = require('node-fetch')
 
 module.exports = function (IP) {
@@ -9,7 +9,7 @@ module.exports = function (IP) {
       {
         method: "GET",
         headers: {
-          Authorization: tokencloud.Authorization,
+          Authorization: tokencloud,
           "Content-Type": "application/json",
         },
       }
@@ -24,7 +24,7 @@ module.exports = function (IP) {
           {
             method: "PUT",
             headers: {
-              Authorization: tokencloud.Authorization,
+              Authorization: tokencloud,
               "Content-Type": "application/json",
             },
             body: bodys,
