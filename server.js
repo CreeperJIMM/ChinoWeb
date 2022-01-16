@@ -1375,6 +1375,7 @@ client.once('ready',() => {
     console.log(`[${day.toDateString()}]`+'Start on port ' + port+"\nIP:" +IP)
     setInterval(() => {
         let timer = new Date()
+        /*
             fetch.default('https://api.my-ip.io/ip.json', 
             {method: 'GET',
             }).then(async(data) => {
@@ -1384,7 +1385,8 @@ client.once('ready',() => {
                 IP = data2.ip
                 update(IP)
                 //update2()
-            })
+                
+            })*/
       }, 7200000);
 })
 
@@ -1396,6 +1398,7 @@ console.log(args);*/
 function dcbot(req,res,ip) {
     client.channels.cache.get("821025363513442345").send(`⚠IP ${ip} 有ddos的嫌疑.‼`)
 }
+/*
 let ipv = null
 fetch.default('https://api.my-ip.io/ip.json', 
 {method: 'GET',
@@ -1406,7 +1409,7 @@ fetch.default('https://api.my-ip.io/ip.json',
     IP = data2.ip
     return update(IP)
     //update2()
-})
+})*/
 
 let update = require("./function/updateDNS");
 
